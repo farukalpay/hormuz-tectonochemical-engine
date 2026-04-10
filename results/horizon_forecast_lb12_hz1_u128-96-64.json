@@ -1,0 +1,51 @@
+{
+  "steps": 4,
+  "resolved_device": "/GPU:0",
+  "forecast": [
+    {
+      "timestamp": "forecast_step_1",
+      "h2_co_ratio": 2.4372146129608154,
+      "methane_slip_pct": 3.992936849594116,
+      "methanol_selectivity_pct": 83.29100036621094,
+      "ftir_methoxy_ratio": 1.3860743045806885,
+      "urea_yield_pct": 87.83854675292969,
+      "ftir_urea_carbonyl_ratio": 1.295000672340393,
+      "nitrate_mg_l": 4.1028008460998535,
+      "permeate_conductivity_uScm": 209.18695068359375
+    },
+    {
+      "timestamp": "forecast_step_2",
+      "h2_co_ratio": 2.4223947525024414,
+      "methane_slip_pct": 4.079061508178711,
+      "methanol_selectivity_pct": 82.95038604736328,
+      "ftir_methoxy_ratio": 1.3800179958343506,
+      "urea_yield_pct": 87.36466979980469,
+      "ftir_urea_carbonyl_ratio": 1.289899230003357,
+      "nitrate_mg_l": 4.076970100402832,
+      "permeate_conductivity_uScm": 209.72731018066406
+    },
+    {
+      "timestamp": "forecast_step_3",
+      "h2_co_ratio": 2.400662899017334,
+      "methane_slip_pct": 4.183533668518066,
+      "methanol_selectivity_pct": 82.30445098876953,
+      "ftir_methoxy_ratio": 1.3686985969543457,
+      "urea_yield_pct": 86.47102355957031,
+      "ftir_urea_carbonyl_ratio": 1.28141450881958,
+      "nitrate_mg_l": 4.051907062530518,
+      "permeate_conductivity_uScm": 211.22093200683594
+    },
+    {
+      "timestamp": "forecast_step_4",
+      "h2_co_ratio": 2.4008913040161133,
+      "methane_slip_pct": 4.193730354309082,
+      "methanol_selectivity_pct": 81.03547668457031,
+      "ftir_methoxy_ratio": 1.352686882019043,
+      "urea_yield_pct": 85.19058990478516,
+      "ftir_urea_carbonyl_ratio": 1.2740908861160278,
+      "nitrate_mg_l": 4.065735340118408,
+      "permeate_conductivity_uScm": 212.32449340820312
+    }
+  ],
+  "driver_policy": "persistence plus linear slope clipping within observed bounds"
+}

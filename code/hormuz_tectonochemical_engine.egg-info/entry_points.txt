@@ -1,0 +1,3 @@
+[console_scripts]
+hte-mcp = hte.mcp_app:main
+hte-run = hte.cli:main

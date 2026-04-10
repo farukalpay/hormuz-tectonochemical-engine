@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this repository, cite the software and the manuscript. Fill DOI fields after ChemRxiv and software DOI assignment."
+title: "hormuz-tectonochemical-engine"
+version: "0.4.0"
+date-released: 2026-04-11
+authors:
+  - family-names: "Alpay"
+    given-names: "Faruk"
+repository-code: "https://github.com/farukalpay/hormuz-tectonochemical-engine"
+license: "MIT"
+keywords:
+  - chemistry
+  - computational chemistry
+  - time-series forecasting
+  - desalination
+  - mcp
+preferred-citation:
+  type: article
+  title: "Aligned hydrocarbon-nitrogen-water forecasting for Strait of Hormuz disruptions"
+  authors:
+    - family-names: "Alpay"
+      given-names: "Faruk"

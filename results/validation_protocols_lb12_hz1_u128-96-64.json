@@ -1,0 +1,119 @@
+[
+  {
+    "protocol_id": "steam-reforming-gc",
+    "title": "Steam reforming and shift closure under constrained feed-gas margin",
+    "objective": "Verify that the aligned forcing envelope reproduces the forecasted H2/CO ratio and methane slip under fixed-bed Ni/Al2O3 operation.",
+    "setup": {
+      "catalyst": "Ni/Al2O3 fixed bed, 0.50 g",
+      "temperature_c": 780.0,
+      "steam_to_carbon_ratio": 2.85,
+      "gas_hourly_space_velocity_h-1": 12000.0
+    },
+    "measurements": {
+      "gc_tcd_h2_co_ratio": "Use calibrated GC-TCD peak areas for H2 and CO at steady state.",
+      "gc_fid_methane_slip_pct": "Use GC-FID methane peak area with external standard calibration.",
+      "carbon_balance_pct": "Report inlet vs outlet carbon closure."
+    },
+    "expected_outputs": {
+      "expected_h2_co_ratio": 2.4372146129608154,
+      "expected_methane_slip_pct": 3.992936849594116,
+      "expected_output_type": "Chromatogram peak areas for H2, CO, CH4, CO2 and derived ratio/slip values."
+    },
+    "acceptance_criteria": {
+      "h2_co_ratio": "Accept if measured H2/CO is within +/- 0.145 of the forecast.",
+      "methane_slip_pct": "Accept if methane slip is within +/- 1.266 percentage points."
+    },
+    "source_alignment": [
+      "xu_froment_1989",
+      "cen_chemical_sector_2026"
+    ]
+  },
+  {
+    "protocol_id": "methanol-synthesis-gc-ftir",
+    "title": "CO2 hydrogenation to methanol with GC and ATR-FTIR readout",
+    "objective": "Check whether the forecasted methanol selectivity and methoxy band ratio remain coupled when pressure and recycle are adjusted inside the aligned envelope.",
+    "setup": {
+      "catalyst": "Cu/ZnO/Al2O3 fixed bed, 1.00 g",
+      "temperature_c": 245.0,
+      "pressure_bar": 48.0,
+      "feed_ratio_h2_to_co2": 3.0
+    },
+    "measurements": {
+      "gc_fid_methanol_selectivity_pct": "Integrate methanol, CO, and CO2 peaks after condensation and calibration.",
+      "atr_ftir_methoxy_ratio": "Report the 1030 cm^-1 to 1380 cm^-1 band area ratio.",
+      "condensate_mass_balance_pct": "Report condensate yield relative to carbon feed."
+    },
+    "expected_outputs": {
+      "expected_methanol_selectivity_pct": 83.29100036621094,
+      "expected_ftir_methoxy_ratio": 1.3860743045806885,
+      "expected_output_type": "GC peak areas and ATR-FTIR methoxy-band ratios."
+    },
+    "acceptance_criteria": {
+      "methanol_selectivity_pct": "Accept if selectivity is within +/- 3.887 percentage points.",
+      "ftir_methoxy_ratio": "Accept if the 1030/1380 ratio is within +/- 0.059."
+    },
+    "source_alignment": [
+      "vanden_bussche_froment_1996",
+      "unctad_hormuz_2026_03_10"
+    ]
+  },
+  {
+    "protocol_id": "urea-chain-ftir-ic",
+    "title": "Ammonium carbamate to urea closure with FTIR and ion chromatography",
+    "objective": "Test the nitrogen branch directly with an aligned carbamate-to-urea conversion and downstream nitrate assay.",
+    "setup": {
+      "reactor": "Stainless steel microautoclave, 50 mL",
+      "temperature_c": 185.0,
+      "hold_time_min": 120.0,
+      "quench_temperature_c": 25.0
+    },
+    "measurements": {
+      "isolated_urea_yield_pct": "Dry the isolated solid and report gravimetric yield.",
+      "atr_ftir_urea_carbonyl_ratio": "Report the 1680 cm^-1 to 1460 cm^-1 band area ratio.",
+      "ic_nitrate_mg_l": "Measure nitrate in the hydrolysis liquor by ion chromatography."
+    },
+    "expected_outputs": {
+      "expected_urea_yield_pct": 87.83854675292969,
+      "expected_ftir_urea_carbonyl_ratio": 1.295000672340393,
+      "expected_nitrate_mg_l": 4.1028008460998535,
+      "expected_output_type": "Isolated yield %, ATR-FTIR band ratio, ion chromatogram nitrate concentration."
+    },
+    "acceptance_criteria": {
+      "urea_yield_pct": "Accept if isolated yield is within +/- 4.233 percentage points.",
+      "nitrate_mg_l": "Accept if nitrate is within +/- 0.447 mg/L."
+    },
+    "source_alignment": [
+      "iaea_gov_2025_50",
+      "iaea_gov_2026_8"
+    ]
+  },
+  {
+    "protocol_id": "desalination-conductivity",
+    "title": "Synthetic seawater polishing with conductivity and nitrate validation",
+    "objective": "Verify the water-service branch by coupling chloride load to permeate conductivity and nitrate burden in a bench RO loop.",
+    "setup": {
+      "membrane": "Polyamide RO coupon, 200 cm^2",
+      "feed_salinity_g_l": 35.0,
+      "transmembrane_pressure_bar": 55.0,
+      "recovery_ratio": 0.44
+    },
+    "measurements": {
+      "permeate_conductivity_uScm": "Measure permeate conductivity after 30 min steady operation.",
+      "ic_nitrate_mg_l": "Measure nitrate in the permeate or polishing stream by ion chromatography.",
+      "flux_decline_pct": "Report normalized water flux decline over the run."
+    },
+    "expected_outputs": {
+      "expected_permeate_conductivity_uScm": 209.18695068359375,
+      "expected_nitrate_mg_l": 4.1028008460998535,
+      "expected_output_type": "Conductivity trace, ion chromatogram nitrate peak, normalized flux decline."
+    },
+    "acceptance_criteria": {
+      "permeate_conductivity_uScm": "Accept if conductivity is within +/- 15.972 uS/cm.",
+      "nitrate_mg_l": "Accept if nitrate is within +/- 0.447 mg/L."
+    },
+    "source_alignment": [
+      "elimelech_phillip_2011",
+      "unctad_hormuz_2026_03_10"
+    ]
+  }
+]

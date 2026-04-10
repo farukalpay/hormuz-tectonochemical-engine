@@ -1,0 +1,146 @@
+{
+  "targets": [
+    "h2_co_ratio",
+    "methane_slip_pct",
+    "methanol_selectivity_pct",
+    "ftir_methoxy_ratio",
+    "urea_yield_pct",
+    "ftir_urea_carbonyl_ratio",
+    "nitrate_mg_l",
+    "permeate_conductivity_uScm"
+  ],
+  "test_mae": {
+    "h2_co_ratio": 0.14518097043037415,
+    "methane_slip_pct": 1.2662441730499268,
+    "methanol_selectivity_pct": 3.8872904777526855,
+    "ftir_methoxy_ratio": 0.05851370096206665,
+    "urea_yield_pct": 4.2327423095703125,
+    "ftir_urea_carbonyl_ratio": 0.04882030934095383,
+    "nitrate_mg_l": 0.4473460614681244,
+    "permeate_conductivity_uScm": 15.972115516662598
+  },
+  "test_rmse": {
+    "h2_co_ratio": 0.23200012743473053,
+    "methane_slip_pct": 2.141557455062866,
+    "methanol_selectivity_pct": 5.680625915527344,
+    "ftir_methoxy_ratio": 0.08542846888303757,
+    "urea_yield_pct": 5.385997772216797,
+    "ftir_urea_carbonyl_ratio": 0.06205061450600624,
+    "nitrate_mg_l": 0.7347057461738586,
+    "permeate_conductivity_uScm": 25.00401496887207
+  },
+  "mean_test_mae": 3.25728178024292,
+  "mean_test_rmse": 4.915797233581543,
+  "backend": {
+    "resolved_device": "/GPU:0",
+    "version": "2.16.2",
+    "notes": [
+      "metal-compatible GPU probe succeeded"
+    ]
+  },
+  "training": {
+    "lookback_steps": 12,
+    "max_epochs": 48,
+    "batch_size": 16,
+    "epochs_completed": 11
+  },
+  "normalization": {
+    "feature_columns": [
+      "shipping_risk_index",
+      "insurance_spread_index",
+      "grid_stability_index",
+      "inspection_access_index",
+      "feed_gas_index",
+      "chloride_load_index",
+      "steam_to_carbon_ratio",
+      "reformer_temperature_c",
+      "synthesis_pressure_bar",
+      "recycle_ratio",
+      "ro_recovery_ratio",
+      "h2_co_ratio",
+      "methane_slip_pct",
+      "methanol_selectivity_pct",
+      "ftir_methoxy_ratio",
+      "urea_yield_pct",
+      "ftir_urea_carbonyl_ratio",
+      "nitrate_mg_l",
+      "permeate_conductivity_uScm"
+    ],
+    "target_columns": [
+      "h2_co_ratio",
+      "methane_slip_pct",
+      "methanol_selectivity_pct",
+      "ftir_methoxy_ratio",
+      "urea_yield_pct",
+      "ftir_urea_carbonyl_ratio",
+      "nitrate_mg_l",
+      "permeate_conductivity_uScm"
+    ],
+    "feature_mean": [
+      0.18376509845256805,
+      0.2730078101158142,
+      0.9067125916481018,
+      0.9514798521995544,
+      0.8968742489814758,
+      0.3163343071937561,
+      2.830733299255371,
+      790.1348876953125,
+      47.39308166503906,
+      0.7911297082901001,
+      0.4646414518356323,
+      2.3558599948883057,
+      4.547820568084717,
+      80.18125915527344,
+      1.3231130838394165,
+      85.36500549316406,
+      1.2661882638931274,
+      4.16198205947876,
+      214.60198974609375
+    ],
+    "feature_std": [
+      0.07455646991729736,
+      0.06435426324605942,
+      0.019211331382393837,
+      0.01573864556849003,
+      0.023309744894504547,
+      0.014450574293732643,
+      0.07388533651828766,
+      7.243586540222168,
+      1.514577031135559,
+      0.02151445858180523,
+      0.00533630745485425,
+      0.05737513303756714,
+      0.527330756187439,
+      2.6036598682403564,
+      0.03339377045631409,
+      2.652963638305664,
+      0.030323537066578865,
+      0.2677793502807617,
+      8.851313591003418
+    ],
+    "target_mean": [
+      2.364130973815918,
+      4.481226921081543,
+      80.21143341064453,
+      1.3229392766952515,
+      85.3290023803711,
+      1.266348123550415,
+      4.148722171783447,
+      213.7604217529297
+    ],
+    "target_std": [
+      0.05491778999567032,
+      0.503286600112915,
+      2.5017926692962646,
+      0.0324765145778656,
+      2.6180484294891357,
+      0.02969025820493698,
+      0.10628833621740341,
+      4.097634792327881
+    ]
+  },
+  "figures": {
+    "training_history_figure": "/Users/farukalpay/Desktop/manuscript/hormuz-tectonochemical-engine/results/figures/training_history_lb12_hz1_u128-96-64.png",
+    "holdout_forecast_figure": "/Users/farukalpay/Desktop/manuscript/hormuz-tectonochemical-engine/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png"
+  }
+}

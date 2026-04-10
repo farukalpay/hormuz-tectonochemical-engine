@@ -1,0 +1,22 @@
+Metadata-Version: 2.4
+Name: hormuz-tectonochemical-engine
+Version: 0.4.0
+Summary: Aligned hydrocarbon-nitrogen-water forecasting engine with TensorFlow Metal diagnostics and MCP tooling
+Author: Faruk Alpay
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: numpy>=1.26
+Requires-Dist: pandas>=2.2
+Requires-Dist: matplotlib>=3.8
+Requires-Dist: mcp>=1.10
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+Provides-Extra: tensorflow
+Requires-Dist: tensorflow>=2.16.2; (platform_system != "Darwin" and python_version < "3.13") and extra == "tensorflow"
+Provides-Extra: tensorflow-apple
+Requires-Dist: tensorflow-macos>=2.16.2; (platform_system == "Darwin" and platform_machine == "arm64" and python_version < "3.12") and extra == "tensorflow-apple"
+Requires-Dist: tensorflow-metal>=1.2.0; (platform_system == "Darwin" and platform_machine == "arm64" and python_version < "3.12") and extra == "tensorflow-apple"
+
+# hormuz-tectonochemical-engine code package
+
+This package contains the TensorFlow forecasting pipeline, MCP server surface, and validation workflow used by the repository root.

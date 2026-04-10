@@ -1,0 +1,108 @@
+{
+  "profile_id": "hte-2026-04-alignment-v1",
+  "generated_on": "2026-04-11",
+  "sources": [
+    {
+      "source_id": "iaea_gov_2026_8",
+      "title": "NPT Safeguards Agreement with the Islamic Republic of Iran",
+      "document_number": "GOV/2026/8",
+      "url": "https://www.iaea.org/sites/default/files/gov2026-8.pdf",
+      "accessed_on": "2026-04-11",
+      "usage": "Upper bound on safeguards access continuity and inspection observability."
+    },
+    {
+      "source_id": "iaea_gov_2025_50",
+      "title": "Verification and Monitoring in the Islamic Republic of Iran in light of United Nations Security Council resolution 2231 (2015)",
+      "document_number": "GOV/2025/50",
+      "url": "https://www.iaea.org/sites/default/files/documents/gov2025-50.pdf",
+      "accessed_on": "2026-04-11",
+      "usage": "Reference trajectory for the observability and monitoring channel."
+    },
+    {
+      "source_id": "iaea_statement_2026_03_02",
+      "title": "IAEA Director General's Introductory Statement to the Board of Governors",
+      "url": "https://www.iaea.org/newscenter/statements/iaea-director-generals-introductory-statement-to-the-board-of-governors-2-march-2026",
+      "accessed_on": "2026-04-11",
+      "usage": "Event chronology and no-radiological-release boundary condition."
+    },
+    {
+      "source_id": "unctad_hormuz_2026_03_10",
+      "title": "Strait of Hormuz Disruptions: Implications for Global Trade and Development",
+      "url": "https://unctad.org/system/files/press-material/ma26003_strait-of-hormuz-disruptions_en.pdf",
+      "accessed_on": "2026-04-11",
+      "usage": "Shipping, fertilizer, and tanker-exposure alignment for the macro forcing envelope."
+    },
+    {
+      "source_id": "abc_politics_2026_130629024",
+      "title": "Trump says new call for regime change in Iran justified by 'imminent' threat",
+      "url": "https://abcnews.go.com/Politics/trump-new-call-regime-change-iran-justified-imminent/story?id=130629024",
+      "accessed_on": "2026-04-11",
+      "usage": "Public escalation chronology used only as a dated exogenous event marker."
+    },
+    {
+      "source_id": "cen_chemical_sector_2026",
+      "title": "Iran war hits the chemical sector",
+      "url": "https://cen.acs.org/business/petrochemicals/Iran-war-hits-chemical-sector/104/web/2026/03",
+      "accessed_on": "2026-04-11",
+      "usage": "Process outage alignment for hydrocarbon and fertilizer conversion envelopes."
+    },
+    {
+      "source_id": "eia_steo_2026_04_07",
+      "title": "Short-Term Energy Outlook: Global Oil Markets",
+      "url": "https://www.eia.gov/outlooks/steo/report/global_oil.php",
+      "accessed_on": "2026-04-11",
+      "usage": "Oil-market and chokepoint stress calibration."
+    },
+    {
+      "source_id": "xu_froment_1989",
+      "title": "Methane Steam Reforming, Methanation and Water-Gas Shift: I. Intrinsic Kinetics",
+      "journal": "AIChE Journal",
+      "year": 1989,
+      "doi": "10.1002/aic.690350109",
+      "usage": "Steam-reforming and shift kinetics for the hydrocarbon branch."
+    },
+    {
+      "source_id": "vanden_bussche_froment_1996",
+      "title": "A Steady-State Kinetic Model for Methanol Synthesis and the Water Gas Shift Reaction on a Commercial Cu/ZnO/Al2O3 Catalyst",
+      "journal": "Journal of Catalysis",
+      "year": 1996,
+      "doi": "10.1006/jcat.1996.0156",
+      "usage": "Methanol synthesis kinetics and selectivity constraints."
+    },
+    {
+      "source_id": "elimelech_phillip_2011",
+      "title": "The Future of Seawater Desalination: Energy, Technology, and the Environment",
+      "journal": "Science",
+      "year": 2011,
+      "doi": "10.1126/science.1200488",
+      "usage": "Desalination energy and water-service interpretation."
+    }
+  ],
+  "alignment_map": {
+    "shipping_risk_index": [
+      "unctad_hormuz_2026_03_10",
+      "eia_steo_2026_04_07"
+    ],
+    "inspection_access_index": [
+      "iaea_gov_2025_50",
+      "iaea_gov_2026_8",
+      "iaea_statement_2026_03_02"
+    ],
+    "feed_gas_index": [
+      "cen_chemical_sector_2026",
+      "eia_steo_2026_04_07"
+    ],
+    "steam_reforming_experiment": [
+      "xu_froment_1989",
+      "cen_chemical_sector_2026"
+    ],
+    "methanol_synthesis_experiment": [
+      "vanden_bussche_froment_1996",
+      "unctad_hormuz_2026_03_10"
+    ],
+    "desalination_experiment": [
+      "elimelech_phillip_2011",
+      "unctad_hormuz_2026_03_10"
+    ]
+  }
+}

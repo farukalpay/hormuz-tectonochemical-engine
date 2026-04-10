@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hormuz-tectonochemical-engine"
+version = "0.4.0"
+description = "Aligned hydrocarbon-nitrogen-water forecasting engine with TensorFlow Metal diagnostics and MCP tooling"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Faruk Alpay" }]
+dependencies = [
+  "numpy>=1.26",
+  "pandas>=2.2",
+  "matplotlib>=3.8",
+  "mcp>=1.10"
+]
+
+[project.scripts]
+hte-run = "hte.cli:main"
+hte-mcp = "hte.mcp_app:main"
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+tensorflow = [
+  "tensorflow>=2.16.2; platform_system != 'Darwin' and python_version < '3.13'"
+]
+tensorflow-apple = [
+  "tensorflow-macos>=2.16.2; platform_system == 'Darwin' and platform_machine == 'arm64' and python_version < '3.12'",
+  "tensorflow-metal>=1.2.0; platform_system == 'Darwin' and platform_machine == 'arm64' and python_version < '3.12'"
+]
+
+[tool.setuptools.packages.find]
+where = ["src", "."]
+include = ["hte", "mcp_server"]
