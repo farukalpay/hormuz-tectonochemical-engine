@@ -4,6 +4,7 @@ import json
 
 from mcp.server.fastmcp import FastMCP
 
+from .mcp_runtime import load_mcp_runtime_config
 from .mcp_tools import (
     alignment_manifest,
     backend_status,
@@ -17,8 +18,16 @@ from .mcp_tools import (
 )
 from .provenance import latest_artifact_manifest, provenance_payload
 
+RUNTIME = load_mcp_runtime_config()
 
-mcp = FastMCP("hormuz-tectonochemical-engine")
+mcp = FastMCP(
+    "hormuz-tectonochemical-engine",
+    host=RUNTIME.host,
+    port=RUNTIME.port,
+    sse_path=RUNTIME.sse_path,
+    message_path=RUNTIME.message_path,
+    streamable_http_path=RUNTIME.streamable_http_path,
+)
 
 
 @mcp.tool()
@@ -112,7 +121,7 @@ def briefing_order_prompt() -> str:
 
 
 def main() -> None:
-    mcp.run(transport="stdio")
+    mcp.run(transport=RUNTIME.transport, mount_path=RUNTIME.mount_path)
 
 
 if __name__ == "__main__":

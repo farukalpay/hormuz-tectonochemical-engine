@@ -8,7 +8,6 @@ COPY code ./code
 COPY data ./data
 COPY paper ./paper
 COPY results ./results
-COPY assets ./assets
 COPY README.md CITATION.cff LICENSE ./
 
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
@@ -19,5 +18,10 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel \
     && pip install --no-cache-dir -e "./code[dev,tensorflow]" || pip install --no-cache-dir -e "./code[dev]"
 
 ENV PYTHONPATH=/app/code/src:/app/code
+ENV HTE_MCP_TRANSPORT=streamable-http
+ENV FASTMCP_HOST=0.0.0.0
+ENV FASTMCP_PORT=8000
+ENV FASTMCP_STREAMABLE_HTTP_PATH=/mcp/hormuz
+ENV HTE_MCP_MAX_CONCURRENT_REQUESTS=6
 
 CMD ["/bin/sh", "-lc", "python code/scripts/host_doctor.py && python -m mcp_server.server"]

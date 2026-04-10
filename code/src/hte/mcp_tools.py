@@ -12,7 +12,10 @@ from .config import build_app_config
 from .optimization import optimize_control_schedule
 from .paths import CODE_ROOT, DATA_ROOT, LOGS_ROOT, PAPER_ROOT, RESULTS_ROOT, ensure_runtime_directories
 from .provenance import latest_artifact_manifest, provenance_payload
+from .safety import RequestConcurrencyGuard
 from .validation import design_validation_protocols
+
+_REQUEST_GUARD = RequestConcurrencyGuard.from_env()
 
 
 def _log_event(tool_name: str, payload: dict[str, object]) -> None:
@@ -25,6 +28,24 @@ def _log_event(tool_name: str, payload: dict[str, object]) -> None:
 def _run_logged(tool_name: str, fn, *args, **kwargs) -> dict[str, object]:
     request_id = uuid4().hex
     started = time.perf_counter()
+    if not _REQUEST_GUARD.try_acquire():
+        duration_ms = (time.perf_counter() - started) * 1000.0
+        payload = {
+            "request_id": request_id,
+            "status": "error",
+            "duration_ms": duration_ms,
+            "error_type": "OverloadedError",
+            "error_message": "max concurrent MCP requests reached; retry shortly",
+        }
+        _log_event(tool_name, payload)
+        return {
+            "ok": False,
+            "tool": tool_name,
+            "request_id": request_id,
+            "duration_ms": duration_ms,
+            "error": {"type": "OverloadedError", "message": payload["error_message"]},
+        }
+
     try:
         data = fn(*args, **kwargs)
         duration_ms = (time.perf_counter() - started) * 1000.0
@@ -48,6 +69,8 @@ def _run_logged(tool_name: str, fn, *args, **kwargs) -> dict[str, object]:
             "duration_ms": duration_ms,
             "error": {"type": exc.__class__.__name__, "message": str(exc)},
         }
+    finally:
+        _REQUEST_GUARD.release()
 
 
 def backend_status(preference: str = "gpu") -> dict[str, object]:

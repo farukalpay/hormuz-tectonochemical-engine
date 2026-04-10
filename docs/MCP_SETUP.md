@@ -18,6 +18,31 @@ Start the MCP server:
 .venv-tf/bin/python -m mcp_server.server
 ```
 
+Start MCP over public HTTP:
+
+```bash
+HTE_MCP_TRANSPORT=streamable-http FASTMCP_HOST=0.0.0.0 FASTMCP_PORT=8000 .venv-tf/bin/python -m mcp_server.server
+```
+
+## Remote Docker Deploy
+
+1. Copy `.env.example` to `.env` and fill your SSH/server values.
+2. Run:
+
+```bash
+code/scripts/deploy_remote_mcp.sh
+```
+
+Template default endpoint path is `/mcp/hormuz`.
+FastMCP framework default path is `/mcp` if `FASTMCP_STREAMABLE_HTTP_PATH` is not set.
+Container restart policy is `unless-stopped` so it auto-starts after reboot.
+
+Use in ChatGPT MCP connector:
+
+```text
+https://lightcap.ai/mcp/hormuz
+```
+
 ## Host Verification
 
 ```bash

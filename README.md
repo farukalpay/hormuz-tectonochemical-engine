@@ -55,6 +55,40 @@ Then start the MCP server:
 .venv-tf/bin/python -m mcp_server.server
 ```
 
+Remote HTTP transport (public host):
+
+```bash
+HTE_MCP_TRANSPORT=streamable-http FASTMCP_HOST=0.0.0.0 FASTMCP_PORT=8000 .venv-tf/bin/python -m mcp_server.server
+```
+
+The default remains `stdio` when `HTE_MCP_TRANSPORT` is not set.
+
+## Remote Deploy (Docker)
+
+1. Keep your private server credentials in `.env` (already gitignored).
+2. Shareable template for other users: `.env.example`.
+3. Deploy with one command:
+
+```bash
+code/scripts/deploy_remote_mcp.sh
+```
+
+Template default endpoint path is `/mcp/hormuz` on the port in `HTE_REMOTE_MCP_PORT`.
+FastMCP framework default remains `/mcp` when `FASTMCP_STREAMABLE_HTTP_PATH` is not set.
+Container restart policy is `unless-stopped`, so it comes back after server reboot by default.
+
+Default anti-spam guard is controlled by `HTE_MCP_MAX_CONCURRENT_REQUESTS=6` (tune in `.env` if needed).
+
+## ChatGPT MCP Usage
+
+After deploy, use this server URL in ChatGPT MCP connector settings:
+
+```text
+https://lightcap.ai/mcp/hormuz
+```
+
+No password is required by default.
+
 ## Manual Install
 
 Apple Silicon:
@@ -159,8 +193,11 @@ docker build -t hte-mcp .
 Run:
 
 ```bash
-docker run --rm -it hte-mcp
+docker run --rm -it -p 8000:8000 hte-mcp
 ```
+
+With this repo defaults, use `http://localhost:8000/mcp/hormuz`.
+If `FASTMCP_STREAMABLE_HTTP_PATH` is unset, FastMCP default is `http://localhost:8000/mcp`.
 
 ## Citation Bridge
 
