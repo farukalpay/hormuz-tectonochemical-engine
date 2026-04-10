@@ -2,25 +2,89 @@
 
 ![HORMUZ Engine](img/strait-of-hormuz.png)
 
-Reproducible hydrocarbon-nitrogen-water forecasting stack for the Strait of Hormuz problem, with an MCP-first surface and a paper-ready artifact pipeline.
+[![Python](https://img.shields.io/badge/python-3.11%2B-blue.svg)](#setup)
+[![TensorFlow](https://img.shields.io/badge/backend-TensorFlow-orange.svg)](#setup)
+[![MCP](https://img.shields.io/badge/interface-MCP--first-green.svg)](#mcp-surface)
 
-Repository: [github.com/farukalpay/hormuz-tectonochemical-engine](https://github.com/farukalpay/hormuz-tectonochemical-engine)
+Reproducible hydrocarbon-nitrogen-water forecasting for the Strait of Hormuz, with an MCP-first interface and a paper-ready artifact pipeline.
 
-This repo is built for two readers at once:
+**Built for two jobs:**
+- generate a defensible forecasting artifact stack,
+- expose one clean MCP call path without forcing readers through the internals first.
 
-- manuscript readers who want the equations, experiments, figures, and PDF in one place,
-- MCP and agent users who want one useful call path before they care about internal plumbing.
+## Why this repo exists
 
-## What You Get in 5 Minutes
+Most research-code repos fail both ways: too academic for operators, too operational for paper readers.
 
-- Apple Metal aware TensorFlow runtime detection with explicit CPU fallback,
-- a 3-layer LSTM + temporal attention forecaster over aligned hydrocarbon / nitrogen / water observables,
-- differentiable schedule optimization over the controllable process window,
-- lab protocols with GC, FTIR, ion chromatography, yield, and conductivity targets,
-- a single `scenario_briefing_tool` payload for MCP clients,
-- a clean repo split: `paper/`, `code/`, `data/`, `results/`.
+This one does not.
 
-## Repo Layout
+You get:
+- TensorFlow-first execution with Metal-aware GPU detection and explicit CPU fallback,
+- aligned hydrocarbon / nitrogen / water forecasting with LSTM + temporal attention,
+- differentiable schedule optimization over a controllable process window,
+- reproducible outputs across metrics, forecasts, figures, optimization summaries, and paper artifacts,
+- an MCP surface centered on one practical entry point: `scenario_briefing_tool`.
+
+## Setup
+
+```bash id="40x8yq"
+git clone https://github.com/farukalpay/hormuz-tectonochemical-engine.git
+cd hormuz-tectonochemical-engine
+python3 code/scripts/bootstrap_mcp_host.py --venv .venv-tf
+.venv-tf/bin/python code/scripts/check_tensorflow_backend.py
+````
+
+## Run
+
+Generate data:
+
+```bash id="yj95fa"
+.venv-tf/bin/python code/scripts/generate_aligned_dataset.py
+```
+
+Rebuild outputs:
+
+```bash id="74n9up"
+.venv-tf/bin/python code/scripts/rebuild_outputs.py
+```
+
+Start the MCP server:
+
+```bash id="e4k7dn"
+.venv-tf/bin/python -m mcp_server.server
+```
+
+Direct CLI path:
+
+```bash id="k7gu2d"
+.venv-tf/bin/python -m hte.cli rebuild --backend gpu --force-retrain
+```
+
+## Docker
+
+Build:
+
+```bash id="h8zubz"
+docker build -t hte-mcp .
+```
+
+Run MCP server:
+
+```bash id="de8b37"
+docker run --rm -i hte-mcp
+```
+
+Persist outputs to host:
+
+```bash id="hn58hl"
+docker run --rm -it \
+  -v "$(pwd)/results:/app/results" \
+  -v "$(pwd)/paper:/app/paper" \
+  -v "$(pwd)/data:/app/data" \
+  hte-mcp python -m hte.cli rebuild --backend cpu --force-retrain
+```
+
+## Repository layout
 
 ```text
 paper/    manuscript source and compiled PDF
@@ -29,142 +93,54 @@ data/     aligned benchmark data and source manifest
 results/  model metrics, forecasts, optimization summaries, figures
 ```
 
-## Fastest Install
+## MCP surface
 
-Dry run:
+Core tools:
 
-```bash
-python3 code/scripts/bootstrap_mcp_host.py --venv .venv-tf --dry-run
-```
+* `backend_status_tool`
+* `alignment_manifest_tool`
+* `train_model_tool`
+* `forecast_observables_tool`
+* `optimize_schedule_tool`
+* `validation_protocols_tool`
+* `write_artifacts_tool`
+* `scenario_briefing_tool`
+* `host_diagnostics_tool`
 
-Apple Silicon install:
+Start with `scenario_briefing_tool` if you want the shortest path from zero to a usable payload.
 
-```bash
-python3 code/scripts/bootstrap_mcp_host.py --venv .venv-tf
-```
+## Outputs
 
-Then verify Metal / CPU fallback:
+Default runs produce artifacts such as:
 
-```bash
-.venv-tf/bin/python code/scripts/check_tensorflow_backend.py
-```
+* `results/model_metrics_lb12_hz1_u128-96-64.json`
+* `results/holdout_predictions_lb12_hz1_u128-96-64.csv`
+* `results/horizon_forecast_lb12_hz1_u128-96-64.json`
+* `results/optimization_summary_lb12_hz1_u128-96-64.json`
+* `results/validation_protocols_lb12_hz1_u128-96-64.json`
+* `results/figures/holdout_forecast_lb12_hz1_u128-96-64.png`
+* `results/figures/optimized_control_schedule_lb12_hz1_u128-96-64.png`
+* `paper/paper.pdf`
 
-Then start the MCP server:
+## Failure modes worth checking first
 
-```bash
-.venv-tf/bin/python -m mcp_server.server
-```
+If a command fails, check these before blaming the model:
 
-## Manual Install
-
-Apple Silicon:
-
-```bash
-/opt/homebrew/bin/python3.11 -m venv .venv-tf
-source .venv-tf/bin/activate
-pip install -r code/requirements.txt
-pip install -r code/requirements-tf-macos.txt
-pip install -e './code[dev,tensorflow-apple]'
-python code/scripts/check_tensorflow_backend.py
-```
-
-Linux / Windows:
-
-```bash
-python3 -m venv .venv-tf
-source .venv-tf/bin/activate
-pip install -r code/requirements.txt
-pip install -r code/requirements-tf-linux-windows.txt
-pip install -e './code[dev,tensorflow]'
-python code/scripts/check_tensorflow_backend.py
-```
-
-## TensorFlow Policy
-
-The numerical path is TensorFlow-first.
-
-- If Metal is visible and a probe matmul succeeds, training runs on `GPU:0`.
-- If TensorFlow imports but the Metal probe fails, the code records the failure and reroutes training to CPU.
-- If TensorFlow is missing, host diagnostics return an explicit install plan instead of silently switching to another framework.
-
-## First Useful Commands
-
-Generate the aligned benchmark dataset:
-
-```bash
-.venv-tf/bin/python code/scripts/generate_aligned_dataset.py
-```
-
-Rebuild the public artifacts:
-
-```bash
-.venv-tf/bin/python code/scripts/rebuild_outputs.py
-```
-
-Run the CLI directly:
-
-```bash
-.venv-tf/bin/python -m hte.cli rebuild --backend gpu --force-retrain
-```
+* you cloned the repo and `cd`'d into it,
+* the virtual environment exists,
+* dependencies actually installed,
+* TensorFlow backend detection passed,
+* Docker runs include volume mounts when outputs need to survive container exit.
 
 Host diagnostics:
 
-```bash
+```bash id="lejddj"
 .venv-tf/bin/python code/scripts/host_doctor.py
 ```
 
-Tests:
+## Project metadata
 
-```bash
-.venv-tf/bin/python -m pytest code/tests/test_mcp_tools.py -q
-```
-
-## MCP Tools
-
-Core surface:
-
-- `backend_status_tool`
-- `alignment_manifest_tool`
-- `train_model_tool`
-- `forecast_observables_tool`
-- `optimize_schedule_tool`
-- `validation_protocols_tool`
-- `write_artifacts_tool`
-- `scenario_briefing_tool`
-- `host_diagnostics_tool`
-
-`scenario_briefing_tool` is the shortest path from zero to a full payload with backend status, provenance, and generated artifact references.
-
-## Generated Artifacts
-
-Main files produced by the default run:
-
-- `results/model_metrics_lb12_hz1_u128-96-64.json`
-- `results/holdout_predictions_lb12_hz1_u128-96-64.csv`
-- `results/horizon_forecast_lb12_hz1_u128-96-64.json`
-- `results/optimization_summary_lb12_hz1_u128-96-64.json`
-- `results/validation_protocols_lb12_hz1_u128-96-64.json`
-- `results/figures/holdout_forecast_lb12_hz1_u128-96-64.png`
-- `results/figures/optimized_control_schedule_lb12_hz1_u128-96-64.png`
-- `paper/paper.pdf`
-
-## Docker
-
-Build:
-
-```bash
-docker build -t hte-mcp .
-```
-
-Run:
-
-```bash
-docker run --rm -it hte-mcp
-```
-
-## Citation Bridge
-
-- Software metadata: `CITATION.cff`
-- License: `LICENSE`
-- Manuscript source: `paper/paper.tex`
-- Data/source manifest: `data/source_manifest.json`
+* `CITATION.cff`
+* `LICENSE`
+* `paper/paper.tex`
+* `data/source_manifest.json`
