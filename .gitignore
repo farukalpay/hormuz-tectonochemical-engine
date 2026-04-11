@@ -29,3 +29,7 @@ env/
 results/audit/
 results/evidence/
 results/published_runs/
+
+# Local manuscript bridge (private, local-only workspace)
+manuscript-bridge/
+manuscript-bridge/articles/
