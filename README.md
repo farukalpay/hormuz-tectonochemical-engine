@@ -80,18 +80,8 @@ Template default endpoint path is `/mcp/hormuz` on the port in `HTE_REMOTE_MCP_P
 FastMCP framework default remains `/mcp` when `FASTMCP_STREAMABLE_HTTP_PATH` is not set.
 Container restart policy is `unless-stopped`, so it comes back after server reboot by default.
 
-Default anti-spam guard is controlled by `HTE_MCP_MAX_CONCURRENT_REQUESTS=6` (tune in `.env` if needed).
-Default streamable transport mode is stateless (`HTE_MCP_STATELESS_HTTP=true`) to avoid session-affinity breakage behind gateways/load balancers.
-GPU runtime selection is deployment-driven: `HTE_GPU_MODE=auto|nvidia|rocm|none`, with optional hard gate `HTE_REQUIRE_GPU=true`.
-TensorFlow distribution is also deployment-driven: `HTE_TENSORFLOW_DISTRIBUTION=auto|cuda|rocm|cpu` (default `auto` maps from resolved GPU mode).
-ROCm deploys default to `HTE_ROCM_BASE_IMAGE=rocm/tensorflow:latest`; use `HTE_ROCM_HSA_OVERRIDE_GFX_VERSION` only when your AMD architecture needs an explicit override.
-`HTE_DOCKER_BASE_IMAGE` can override the selected base image when you need a pinned runtime.
-The runtime disables TensorFlow XLA JIT and enables GPU memory growth before probing/training so ROCm hosts do not silently drift into unstable autotuned kernels.
-Training determinism is `auto`: CPU runs keep deterministic ops enabled, while ROCm GPU runs stay seed-stable without forcing the determinism path that corrupts batch-1 loss.
-If a cached model was trained on CPU fallback while `GPU:0` is now healthy, the next request retrains instead of reusing the degraded cache.
-Default OAuth consent screen is approve-only (no password).
-Artifact link publishing is enabled by default and can be disabled with `HTE_ARTIFACT_LINKS_ENABLED=false`.
-Per-request artifact snapshots are written under `results/published_runs/<timestamp>_<tool>_<request_id>/`.
+The Docker deploy auto-selects CPU, CUDA, or ROCm, keeps HTTP stateless by default, and retrains stale CPU fallback models when `GPU:0` becomes healthy.
+Concurrency, OAuth, runtime image, and artifact publishing settings live in `.env` / `.env.example`.
 
 ## ChatGPT MCP Usage
 
