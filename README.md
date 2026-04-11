@@ -130,8 +130,6 @@ Sample generated with Claude Sonnet 4.5 using the prompt above.
 
 **Strait of Hormuz - Operational Intelligence Summary | 11 April 2026**
 
-![Claude Sonnet 4.5 chat history](img/claude-chat-11-april-2026.PNG)
-
 Current situation: The strait has been effectively closed since 28 February. Following the two-week ceasefire announced on 8 April, transit numbers have not increased; daily crossings sit at 3-15, negligible against the pre-war baseline of about 130. The IRGC controls the northern corridor, per-vessel transit fees exceed $1-2M, and coordination with Iran's Armed Forces is mandatory.
 
 Critical stress points: Technically, coverage is available per the LMA, but Lloyd's premium rates are around 10%, equal to roughly $10-14M in additional war-risk cost for a single VLCC transit. The real blocker is crew safety, not insurance availability.
