@@ -36,12 +36,25 @@ code/scripts/deploy_remote_mcp.sh
 Template default endpoint path is `/mcp/hormuz`.
 FastMCP framework default path is `/mcp` if `FASTMCP_STREAMABLE_HTTP_PATH` is not set.
 Container restart policy is `unless-stopped` so it auto-starts after reboot.
+Default OAuth consent is approve-only unless `HTE_OAUTH_APPROVAL_PASSWORD_HASH` is configured.
+Set `HTE_OAUTH_PUBLIC_BASE_URL` to your HTTPS domain for stable OAuth metadata URLs.
+Authorize UI endpoint is `<base-url>/mcp/hormuz/authorize`.
+Artifact links are enabled by default and served from `<base-url>/mcp/hormuz/artifacts/...`.
+Disable with `HTE_ARTIFACT_LINKS_ENABLED=false` if a host does not want public artifact URLs.
 
 Use in ChatGPT MCP connector:
 
 ```text
 https://lightcap.ai/mcp/hormuz
 ```
+
+Generate optional consent password hash:
+
+```bash
+python code/scripts/generate_oauth_approval_password_hash.py
+```
+
+`/mcp/nexus` remains a separate gateway with its own credential-binding flow.
 
 ## Host Verification
 

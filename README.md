@@ -78,6 +78,9 @@ FastMCP framework default remains `/mcp` when `FASTMCP_STREAMABLE_HTTP_PATH` is 
 Container restart policy is `unless-stopped`, so it comes back after server reboot by default.
 
 Default anti-spam guard is controlled by `HTE_MCP_MAX_CONCURRENT_REQUESTS=6` (tune in `.env` if needed).
+Default OAuth consent screen is approve-only (no password).
+Artifact link publishing is enabled by default and can be disabled with `HTE_ARTIFACT_LINKS_ENABLED=false`.
+Per-request artifact snapshots are written under `results/published_runs/<timestamp>_<tool>_<request_id>/`.
 
 ## ChatGPT MCP Usage
 
@@ -88,6 +91,36 @@ https://lightcap.ai/mcp/hormuz
 ```
 
 No password is required by default.
+If `HTE_OAUTH_APPROVAL_PASSWORD_HASH` is set, the authorize page asks only that approval password.
+Set `HTE_OAUTH_PUBLIC_BASE_URL=https://your-domain` so OAuth metadata always publishes HTTPS URLs.
+Authorize UI endpoint (served from this stack): `https://lightcap.ai/mcp/hormuz/authorize`.
+Generate a secure hash with:
+
+```bash
+python code/scripts/generate_oauth_approval_password_hash.py
+```
+
+Important: `https://lightcap.ai/mcp/nexus` is a different MCP gateway and has its own SSH-binding consent flow.
+
+## Artifact Links in MCP Responses
+
+When a tool output contains file paths, MCP responses now include an `artifacts` section with:
+
+- server storage paths,
+- public paths,
+- full URLs (if `HTE_ARTIFACT_PUBLIC_BASE_URL` is set).
+
+Default public route:
+
+```text
+https://lightcap.ai/mcp/hormuz/artifacts/<run_id>/<relative_file_path>
+```
+
+You can disable public artifact links:
+
+```bash
+HTE_ARTIFACT_LINKS_ENABLED=false
+```
 
 ## Manual Install
 

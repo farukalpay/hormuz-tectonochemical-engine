@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 from uuid import uuid4
 
+from .artifact_publisher import get_artifact_publisher
 from .backends import backend_payload
 from .calibration import forecast_horizon, train_forecaster, write_project_artifacts
 from .config import build_app_config
@@ -16,6 +17,7 @@ from .safety import RequestConcurrencyGuard
 from .validation import design_validation_protocols
 
 _REQUEST_GUARD = RequestConcurrencyGuard.from_env()
+_ARTIFACT_PUBLISHER = get_artifact_publisher()
 
 
 def _log_event(tool_name: str, payload: dict[str, object]) -> None:
@@ -51,7 +53,26 @@ def _run_logged(tool_name: str, fn, *args, **kwargs) -> dict[str, object]:
         duration_ms = (time.perf_counter() - started) * 1000.0
         payload = {"request_id": request_id, "status": "ok", "duration_ms": duration_ms}
         _log_event(tool_name, payload)
-        return {"ok": True, "tool": tool_name, "request_id": request_id, "duration_ms": duration_ms, "data": data}
+        response = {"ok": True, "tool": tool_name, "request_id": request_id, "duration_ms": duration_ms, "data": data}
+        try:
+            published = _ARTIFACT_PUBLISHER.publish(
+                tool_name=tool_name,
+                request_id=request_id,
+                args=args,
+                kwargs=kwargs,
+                response_data=data,
+            )
+        except Exception as publish_exc:
+            published = {
+                "enabled": False,
+                "error": {
+                    "type": publish_exc.__class__.__name__,
+                    "message": str(publish_exc),
+                },
+            }
+        if published is not None:
+            response["artifacts"] = published
+        return response
     except Exception as exc:
         duration_ms = (time.perf_counter() - started) * 1000.0
         payload = {

@@ -3,7 +3,10 @@ from __future__ import annotations
 import json
 
 from mcp.server.fastmcp import FastMCP
+from starlette.requests import Request
+from starlette.responses import FileResponse, JSONResponse, Response
 
+from .artifact_publisher import get_artifact_publisher
 from .mcp_runtime import load_mcp_runtime_config
 from .mcp_tools import (
     alignment_manifest,
@@ -16,6 +19,7 @@ from .mcp_tools import (
     validation_protocols,
     write_artifacts,
 )
+from .oauth import OAuthUiServer
 from .provenance import latest_artifact_manifest, provenance_payload
 
 RUNTIME = load_mcp_runtime_config()
@@ -28,6 +32,9 @@ mcp = FastMCP(
     message_path=RUNTIME.message_path,
     streamable_http_path=RUNTIME.streamable_http_path,
 )
+oauth_ui = OAuthUiServer(resource_path=RUNTIME.streamable_http_path)
+artifact_publisher = get_artifact_publisher()
+_resource_suffix = RUNTIME.streamable_http_path.lstrip("/")
 
 
 @mcp.tool()
@@ -118,6 +125,45 @@ def briefing_order_prompt() -> str:
         "Call backend_status_tool, then alignment_manifest_tool, then train_model_tool, "
         "then forecast_observables_tool, optimize_schedule_tool, and validation_protocols_tool."
     )
+
+
+@mcp.custom_route(f"{RUNTIME.streamable_http_path}/register", methods=["POST"])
+async def oauth_register_route(request: Request) -> Response:
+    return await oauth_ui.handle_register(request)
+
+
+@mcp.custom_route(f"{RUNTIME.streamable_http_path}/authorize", methods=["GET"])
+async def oauth_authorize_route(request: Request) -> Response:
+    return await oauth_ui.handle_authorize(request)
+
+
+@mcp.custom_route(f"{RUNTIME.streamable_http_path}/consent", methods=["POST"])
+async def oauth_consent_route(request: Request) -> Response:
+    return await oauth_ui.handle_consent(request)
+
+
+@mcp.custom_route(f"{RUNTIME.streamable_http_path}/token", methods=["POST"])
+async def oauth_token_route(request: Request) -> Response:
+    return await oauth_ui.handle_token(request)
+
+
+@mcp.custom_route(f"/.well-known/oauth-authorization-server/{_resource_suffix}", methods=["GET"])
+async def oauth_authorization_server_metadata_route(request: Request) -> Response:
+    return await oauth_ui.handle_authorization_server_metadata(request)
+
+
+@mcp.custom_route(f"/.well-known/oauth-protected-resource/{_resource_suffix}", methods=["GET"])
+async def oauth_protected_resource_metadata_route(request: Request) -> Response:
+    return await oauth_ui.handle_protected_resource_metadata(request)
+
+
+@mcp.custom_route(f"{artifact_publisher.route_prefix}/{{artifact_path:path}}", methods=["GET"])
+async def artifact_file_route(request: Request) -> Response:
+    artifact_path = str(request.path_params.get("artifact_path", ""))
+    resolved = artifact_publisher.resolve_public_relative_path(artifact_path)
+    if resolved is None:
+        return JSONResponse({"error": "artifact_not_found"}, status_code=404)
+    return FileResponse(resolved)
 
 
 def main() -> None:
