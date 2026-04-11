@@ -12,6 +12,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlencode
+from urllib.parse import urlparse
 
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, JSONResponse, RedirectResponse, Response
@@ -79,6 +80,9 @@ def load_oauth_ui_config() -> OAuthUiConfig:
     password_hash = os.environ.get("HTE_OAUTH_APPROVAL_PASSWORD_HASH", "").strip() or None
     public_base_url = os.environ.get("HTE_OAUTH_PUBLIC_BASE_URL", "").strip() or None
     if public_base_url:
+        parsed = urlparse(public_base_url)
+        if parsed.scheme.lower() != "https" or not parsed.netloc:
+            raise ValueError("HTE_OAUTH_PUBLIC_BASE_URL must be an absolute https URL")
         public_base_url = public_base_url.rstrip("/")
     title = os.environ.get("HTE_OAUTH_PAGE_TITLE", "Authorize MCP Access").strip() or "Authorize MCP Access"
     subtitle = (

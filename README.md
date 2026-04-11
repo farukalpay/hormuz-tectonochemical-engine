@@ -80,6 +80,8 @@ FastMCP framework default remains `/mcp` when `FASTMCP_STREAMABLE_HTTP_PATH` is 
 Container restart policy is `unless-stopped`, so it comes back after server reboot by default.
 
 Default anti-spam guard is controlled by `HTE_MCP_MAX_CONCURRENT_REQUESTS=6` (tune in `.env` if needed).
+Default streamable transport mode is stateless (`HTE_MCP_STATELESS_HTTP=true`) to avoid session-affinity breakage behind gateways/load balancers.
+GPU runtime selection is deployment-driven: `HTE_GPU_MODE=auto|nvidia|rocm|none`, with optional hard gate `HTE_REQUIRE_GPU=true`.
 Default OAuth consent screen is approve-only (no password).
 Artifact link publishing is enabled by default and can be disabled with `HTE_ARTIFACT_LINKS_ENABLED=false`.
 Per-request artifact snapshots are written under `results/published_runs/<timestamp>_<tool>_<request_id>/`.
@@ -105,6 +107,7 @@ OpenAI's current docs describe custom MCP connectors under ChatGPT Developer mod
 No password is required by default.
 If `HTE_OAUTH_APPROVAL_PASSWORD_HASH` is set, the authorize page asks only that approval password.
 Set `HTE_OAUTH_PUBLIC_BASE_URL=https://your-domain` so OAuth metadata always publishes HTTPS URLs.
+`HTE_ARTIFACT_PUBLIC_BASE_URL` should also use `https://` for connector compatibility.
 Authorize UI endpoint (served from this stack): `https://lightcap.ai/mcp/hormuz/authorize`.
 Generate a secure hash with:
 
@@ -230,8 +233,8 @@ python code/scripts/check_tensorflow_backend.py
 
 The numerical path is TensorFlow-first.
 
-- If Metal is visible and a probe matmul succeeds, training runs on `GPU:0`.
-- If TensorFlow imports but the Metal probe fails, the code records the failure and reroutes training to CPU.
+- If a TensorFlow GPU device is visible and a probe matmul succeeds, training runs on `GPU:0`.
+- If TensorFlow imports but GPU runtime is missing or probe fails, the code records root-cause notes and reroutes training to CPU.
 - If TensorFlow is missing, host diagnostics return an explicit install plan instead of silently switching to another framework.
 
 ## First Useful Commands

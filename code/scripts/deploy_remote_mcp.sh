@@ -46,6 +46,9 @@ done
 : "${FASTMCP_HOST:=0.0.0.0}"
 : "${FASTMCP_PORT:=8000}"
 : "${FASTMCP_STREAMABLE_HTTP_PATH:=/mcp/hormuz}"
+: "${HTE_GPU_MODE:=auto}"
+: "${HTE_REQUIRE_GPU:=false}"
+: "${HTE_MCP_STATELESS_HTTP:=true}"
 : "${HTE_MCP_MAX_CONCURRENT_REQUESTS:=6}"
 : "${HTE_OAUTH_APPROVAL_PASSWORD_HASH:=}"
 : "${HTE_OAUTH_PUBLIC_BASE_URL:=}"
@@ -66,6 +69,75 @@ STACK_LABEL_VALUE="hormuz-tectonochemical-engine"
 SSH_TARGET="${DEPLOY_SSH_USER}@${DEPLOY_SSH_HOST}"
 SSH_CMD=(sshpass -p "$DEPLOY_SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p "$DEPLOY_SSH_PORT" "$SSH_TARGET")
 RSYNC_CMD=(sshpass -p "$DEPLOY_SSH_PASSWORD" rsync -az -e "ssh -o StrictHostKeyChecking=no -p $DEPLOY_SSH_PORT")
+
+lower() {
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
+}
+
+is_truthy() {
+  case "$(lower "$1")" in
+    1|true|yes|on) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+require_https_url() {
+  local name="$1"
+  local value="${!name:-}"
+  if [[ -z "$value" ]]; then
+    return
+  fi
+  if [[ "$value" != https://* ]]; then
+    echo "$name must start with https:// for ChatGPT-compatible MCP/OAuth endpoints." >&2
+    exit 1
+  fi
+}
+
+resolve_gpu_mode() {
+  local requested_mode
+  requested_mode="$(lower "$1")"
+  case "$requested_mode" in
+    none|nvidia|rocm)
+      printf '%s' "$requested_mode"
+      return
+      ;;
+    auto)
+      if "${SSH_CMD[@]}" "command -v nvidia-smi >/dev/null 2>&1"; then
+        printf '%s' "nvidia"
+        return
+      fi
+      if "${SSH_CMD[@]}" "[ -e /dev/kfd ] && ls /dev/dri/renderD* >/dev/null 2>&1"; then
+        printf '%s' "rocm"
+        return
+      fi
+      printf '%s' "none"
+      return
+      ;;
+    *)
+      echo "HTE_GPU_MODE must be one of: auto, none, nvidia, rocm" >&2
+      exit 1
+      ;;
+  esac
+}
+
+detect_gpu_vendor_hint() {
+  if "${SSH_CMD[@]}" "lspci -nn 2>/dev/null | grep -Eiq 'nvidia|10de:'"; then
+    printf '%s' "nvidia"
+    return
+  fi
+  if "${SSH_CMD[@]}" "lspci -nn 2>/dev/null | grep -Eiq 'advanced micro devices|amd/ati|1002:'"; then
+    printf '%s' "amd"
+    return
+  fi
+  if "${SSH_CMD[@]}" "lspci -nn 2>/dev/null | grep -Eiq 'intel|8086:'"; then
+    printf '%s' "intel"
+    return
+  fi
+  printf '%s' "unknown"
+}
+
+require_https_url HTE_OAUTH_PUBLIC_BASE_URL
+require_https_url HTE_ARTIFACT_PUBLIC_BASE_URL
 
 echo "Syncing repository to ${SSH_TARGET}:${HTE_REMOTE_APP_DIR} ..."
 "${SSH_CMD[@]}" "mkdir -p '$HTE_REMOTE_APP_DIR'"
@@ -94,14 +166,38 @@ fi
 echo "Checking TCP port ${HTE_REMOTE_MCP_PORT} ..."
 "${SSH_CMD[@]}" "if ss -ltn '( sport = :${HTE_REMOTE_MCP_PORT} )' | grep -q LISTEN; then echo 'Port ${HTE_REMOTE_MCP_PORT} is already in use.' >&2; exit 1; fi"
 
+RESOLVED_GPU_MODE="$(resolve_gpu_mode "$HTE_GPU_MODE")"
+GPU_VENDOR_HINT="$(detect_gpu_vendor_hint)"
+GPU_DOCKER_FLAGS=""
+case "$RESOLVED_GPU_MODE" in
+  nvidia)
+    GPU_DOCKER_FLAGS="--gpus all"
+    ;;
+  rocm)
+    GPU_DOCKER_FLAGS="--device /dev/kfd --device /dev/dri --group-add video"
+    ;;
+  none)
+    GPU_DOCKER_FLAGS=""
+    ;;
+esac
+echo "GPU mode request='${HTE_GPU_MODE}', resolved='${RESOLVED_GPU_MODE}'."
+echo "Host GPU vendor hint='${GPU_VENDOR_HINT}'."
+if [[ "$RESOLVED_GPU_MODE" == "rocm" ]]; then
+  echo "Warning: ROCm mode selected. Ensure host ROCm drivers and a ROCm-compatible TensorFlow build are installed."
+fi
+
 echo "Starting container ${HTE_REMOTE_CONTAINER_NAME} ..."
 "${SSH_CMD[@]}" "docker run -d --name '$HTE_REMOTE_CONTAINER_NAME' --restart unless-stopped \
   --label '${STACK_LABEL_KEY}=${STACK_LABEL_VALUE}' \
+  ${GPU_DOCKER_FLAGS} \
   -p '${HTE_REMOTE_MCP_PORT}:${FASTMCP_PORT}' \
   -e 'HTE_MCP_TRANSPORT=${HTE_MCP_TRANSPORT}' \
+  -e 'HTE_GPU_MODE=${RESOLVED_GPU_MODE}' \
+  -e 'HTE_HOST_GPU_VENDOR_HINT=${GPU_VENDOR_HINT}' \
   -e 'FASTMCP_HOST=${FASTMCP_HOST}' \
   -e 'FASTMCP_PORT=${FASTMCP_PORT}' \
   -e 'FASTMCP_STREAMABLE_HTTP_PATH=${FASTMCP_STREAMABLE_HTTP_PATH}' \
+  -e 'HTE_MCP_STATELESS_HTTP=${HTE_MCP_STATELESS_HTTP}' \
   -e 'HTE_MCP_MAX_CONCURRENT_REQUESTS=${HTE_MCP_MAX_CONCURRENT_REQUESTS}' \
   -e 'HTE_OAUTH_APPROVAL_PASSWORD_HASH=${HTE_OAUTH_APPROVAL_PASSWORD_HASH}' \
   -e 'HTE_OAUTH_PUBLIC_BASE_URL=${HTE_OAUTH_PUBLIC_BASE_URL}' \
@@ -120,4 +216,22 @@ echo "Starting container ${HTE_REMOTE_CONTAINER_NAME} ..."
 echo "Allowing firewall port when ufw is active ..."
 "${SSH_CMD[@]}" "if command -v ufw >/dev/null 2>&1 && ufw status | grep -q 'Status: active'; then ufw allow '${HTE_REMOTE_MCP_PORT}/tcp'; fi"
 
-echo "Service endpoint: http://${DEPLOY_SSH_HOST}:${HTE_REMOTE_MCP_PORT}${FASTMCP_STREAMABLE_HTTP_PATH}"
+echo "Verifying backend runtime resolution ..."
+BACKEND_PROBE_JSON="$("${SSH_CMD[@]}" "docker exec '$HTE_REMOTE_CONTAINER_NAME' /bin/sh -lc \"python -c 'import json; from hte.backends import backend_payload; print(json.dumps(backend_payload(preference=\\\"gpu\\\"), separators=(\\\",\\\",\\\":\\\")))'\"")"
+echo "Backend probe: ${BACKEND_PROBE_JSON}"
+RESOLVED_DEVICE="$(
+  python3 -c 'import json,sys; payload=json.loads(sys.argv[1]); print(payload.get("resolved_device",""))' \
+    "$BACKEND_PROBE_JSON"
+)"
+if is_truthy "$HTE_REQUIRE_GPU" && [[ "$RESOLVED_DEVICE" != "/GPU:0" ]]; then
+  echo "Deployment failed: HTE_REQUIRE_GPU=true but resolved_device=${RESOLVED_DEVICE}." >&2
+  echo "Backend notes:" >&2
+  python3 -c 'import json,sys; payload=json.loads(sys.argv[1]); [print(f"- {line}") for line in payload.get("notes", [])]' "$BACKEND_PROBE_JSON" >&2
+  exit 1
+fi
+
+if [[ -n "$HTE_OAUTH_PUBLIC_BASE_URL" ]]; then
+  echo "Service endpoint: ${HTE_OAUTH_PUBLIC_BASE_URL}${FASTMCP_STREAMABLE_HTTP_PATH}"
+else
+  echo "Service endpoint: http://${DEPLOY_SSH_HOST}:${HTE_REMOTE_MCP_PORT}${FASTMCP_STREAMABLE_HTTP_PATH}"
+fi

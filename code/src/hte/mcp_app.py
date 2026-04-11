@@ -32,6 +32,7 @@ mcp = FastMCP(
     sse_path=RUNTIME.sse_path,
     message_path=RUNTIME.message_path,
     streamable_http_path=RUNTIME.streamable_http_path,
+    stateless_http=RUNTIME.stateless_http,
 )
 oauth_ui = OAuthUiServer(resource_path=RUNTIME.streamable_http_path)
 artifact_publisher = get_artifact_publisher()

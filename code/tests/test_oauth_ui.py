@@ -3,11 +3,12 @@ from __future__ import annotations
 import re
 from urllib.parse import parse_qs, urlparse
 
+import pytest
 from starlette.applications import Starlette
 from starlette.routing import Route
 from starlette.testclient import TestClient
 
-from hte.oauth import OAuthUiConfig, OAuthUiServer, hash_approval_password, verify_approval_password
+from hte.oauth import OAuthUiConfig, OAuthUiServer, hash_approval_password, load_oauth_ui_config, verify_approval_password
 
 
 def _app_for(server: OAuthUiServer) -> Starlette:
@@ -168,3 +169,9 @@ def test_oauth_metadata_uses_public_base_url() -> None:
     assert protected_resource.status_code == 200
     protected_payload = protected_resource.json()
     assert protected_payload["resource"] == "https://lightcap.ai/mcp/hormuz"
+
+
+def test_public_base_url_requires_https(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("HTE_OAUTH_PUBLIC_BASE_URL", "http://lightcap.ai")
+    with pytest.raises(ValueError, match="must be an absolute https URL"):
+        load_oauth_ui_config()
