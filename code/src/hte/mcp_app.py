@@ -14,6 +14,7 @@ from .mcp_tools import (
     forecast_observables,
     host_diagnostics,
     optimize_schedule,
+    record_operational_evidence,
     scenario_briefing,
     train_model,
     validation_protocols,
@@ -90,6 +91,22 @@ def scenario_briefing_tool(backend_preference: str = "gpu", force_retrain: bool 
 
 
 @mcp.tool()
+def record_operational_evidence_tool(
+    evidence_items: list[dict[str, object]],
+    analysis_context: str = "",
+    inferred_indices: dict[str, object] | None = None,
+    uncertainty_notes: list[str] | None = None,
+) -> dict[str, object]:
+    """Persist source-backed evidence gathered by an agent, with source_url required for every item."""
+    return record_operational_evidence(
+        evidence_items=evidence_items,
+        analysis_context=analysis_context,
+        inferred_indices=inferred_indices,
+        uncertainty_notes=uncertainty_notes,
+    )
+
+
+@mcp.tool()
 def host_diagnostics_tool() -> dict[str, object]:
     """Inspect host readiness, file layout, and backend availability."""
     return host_diagnostics()
@@ -122,8 +139,30 @@ def latest_results_resource() -> str:
 )
 def briefing_order_prompt() -> str:
     return (
-        "Call backend_status_tool, then alignment_manifest_tool, then train_model_tool, "
-        "then forecast_observables_tool, optimize_schedule_tool, and validation_protocols_tool."
+        "Call backend_status_tool, then alignment_manifest_tool. If the workflow includes external "
+        "or scraped sources, call record_operational_evidence_tool with one evidence item per source "
+        "and include source_url, title, date, excerpt or summary, operational relevance, confidence, "
+        "and mapped indices. Then call train_model_tool, forecast_observables_tool, "
+        "optimize_schedule_tool, and validation_protocols_tool."
+    )
+
+
+@mcp.prompt(
+    name="hte_operational_intelligence_workflow",
+    title="HTE Operational Intelligence Workflow",
+    description="Source-backed news-to-model workflow for agents using this MCP server.",
+)
+def operational_intelligence_workflow_prompt() -> str:
+    return (
+        "Use this MCP server as a source-backed operational intelligence and model-execution "
+        "workspace. When you scan public reporting or scraped pages, preserve each material source "
+        "with record_operational_evidence_tool before running model tools. Each evidence item should "
+        "carry source_url, source_name, title, published_at or date, a compact excerpt or summary, "
+        "operational_relevance, confidence from 0.0 to 1.0, and mapped_indices if you infer stress "
+        "signals. After evidence capture, use backend_status_tool, alignment_manifest_tool, "
+        "train_model_tool, forecast_observables_tool, optimize_schedule_tool, and write_artifacts_tool "
+        "or scenario_briefing_tool. In the final answer, cite uncertainty and include the evidence "
+        "record or artifact URL when available."
     )
 
 

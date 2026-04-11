@@ -2,3 +2,6 @@
 .env
 __pycache__/
 *.py[cod]
+results/audit/
+results/evidence/
+results/published_runs/

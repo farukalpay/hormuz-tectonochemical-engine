@@ -3,13 +3,13 @@ from __future__ import annotations
 import json
 import platform
 import time
-from pathlib import Path
 from uuid import uuid4
 
 from .artifact_publisher import get_artifact_publisher
+from .audit import record_tool_request, record_tool_result
 from .backends import backend_payload
 from .calibration import forecast_horizon, train_forecaster, write_project_artifacts
-from .config import build_app_config
+from .evidence import record_operational_evidence as persist_operational_evidence
 from .optimization import optimize_control_schedule
 from .paths import CODE_ROOT, DATA_ROOT, LOGS_ROOT, PAPER_ROOT, RESULTS_ROOT, ensure_runtime_directories
 from .provenance import latest_artifact_manifest, provenance_payload
@@ -30,6 +30,7 @@ def _log_event(tool_name: str, payload: dict[str, object]) -> None:
 def _run_logged(tool_name: str, fn, *args, **kwargs) -> dict[str, object]:
     request_id = uuid4().hex
     started = time.perf_counter()
+    record_tool_request(tool_name, request_id, args, kwargs)
     if not _REQUEST_GUARD.try_acquire():
         duration_ms = (time.perf_counter() - started) * 1000.0
         payload = {
@@ -40,13 +41,21 @@ def _run_logged(tool_name: str, fn, *args, **kwargs) -> dict[str, object]:
             "error_message": "max concurrent MCP requests reached; retry shortly",
         }
         _log_event(tool_name, payload)
-        return {
+        response = {
             "ok": False,
             "tool": tool_name,
             "request_id": request_id,
             "duration_ms": duration_ms,
             "error": {"type": "OverloadedError", "message": payload["error_message"]},
         }
+        record_tool_result(
+            tool_name,
+            request_id,
+            status="error",
+            duration_ms=duration_ms,
+            error={"type": "OverloadedError", "message": payload["error_message"]},
+        )
+        return response
 
     try:
         data = fn(*args, **kwargs)
@@ -72,6 +81,13 @@ def _run_logged(tool_name: str, fn, *args, **kwargs) -> dict[str, object]:
             }
         if published is not None:
             response["artifacts"] = published
+        record_tool_result(
+            tool_name,
+            request_id,
+            status="ok",
+            duration_ms=duration_ms,
+            response_data=data,
+        )
         return response
     except Exception as exc:
         duration_ms = (time.perf_counter() - started) * 1000.0
@@ -83,13 +99,21 @@ def _run_logged(tool_name: str, fn, *args, **kwargs) -> dict[str, object]:
             "error_message": str(exc),
         }
         _log_event(tool_name, payload)
-        return {
+        response = {
             "ok": False,
             "tool": tool_name,
             "request_id": request_id,
             "duration_ms": duration_ms,
             "error": {"type": exc.__class__.__name__, "message": str(exc)},
         }
+        record_tool_result(
+            tool_name,
+            request_id,
+            status="error",
+            duration_ms=duration_ms,
+            error={"type": exc.__class__.__name__, "message": str(exc)},
+        )
+        return response
     finally:
         _REQUEST_GUARD.release()
 
@@ -168,6 +192,22 @@ def scenario_briefing(backend_preference: str = "gpu", force_retrain: bool = Fal
         }
 
     return _run_logged("scenario_briefing", _payload)
+
+
+def record_operational_evidence(
+    evidence_items: list[dict[str, object]],
+    analysis_context: str = "",
+    inferred_indices: dict[str, object] | None = None,
+    uncertainty_notes: list[str] | None = None,
+) -> dict[str, object]:
+    return _run_logged(
+        "record_operational_evidence",
+        persist_operational_evidence,
+        evidence_items,
+        analysis_context,
+        inferred_indices,
+        uncertainty_notes,
+    )
 
 
 def host_diagnostics() -> dict[str, object]:
