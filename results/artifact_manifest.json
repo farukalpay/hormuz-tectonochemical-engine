@@ -1,12 +1,14 @@
 {
-  "metrics_path": "/Users/farukalpay/Desktop/manuscript/hormuz-tectonochemical-engine/results/model_metrics_lb12_hz1_u128-96-64.json",
-  "predictions_path": "/Users/farukalpay/Desktop/manuscript/hormuz-tectonochemical-engine/results/holdout_predictions_lb12_hz1_u128-96-64.csv",
-  "forecast_path": "/Users/farukalpay/Desktop/manuscript/hormuz-tectonochemical-engine/results/horizon_forecast_lb12_hz1_u128-96-64.json",
-  "optimization_path": "/Users/farukalpay/Desktop/manuscript/hormuz-tectonochemical-engine/results/optimization_summary_lb12_hz1_u128-96-64.json",
+  "metrics_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/model_metrics_lb12_hz1_u128-96-64.json",
+  "predictions_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/holdout_predictions_lb12_hz1_u128-96-64.csv",
+  "forecast_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/horizon_forecast_lb12_hz1_u128-96-64.json",
+  "optimization_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/optimization_summary_lb12_hz1_u128-96-64.json",
   "validation_protocol_count": 4,
   "figures": {
-    "training_history_figure": "/Users/farukalpay/Desktop/manuscript/hormuz-tectonochemical-engine/results/figures/training_history_lb12_hz1_u128-96-64.png",
-    "holdout_forecast_figure": "/Users/farukalpay/Desktop/manuscript/hormuz-tectonochemical-engine/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png"
+    "training_history_figure": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/training_history_lb12_hz1_u128-96-64.png",
+    "holdout_forecast_figure": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png"
   },
-  "config_tag": "lb12_hz1_u128-96-64"
+  "config_tag": "lb12_hz1_u128-96-64",
+  "forecast_status": "ok",
+  "optimization_status": "ok"
 }

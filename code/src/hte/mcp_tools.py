@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import platform
 import time
+from typing import Any
 from uuid import uuid4
 
 from .artifact_publisher import get_artifact_publisher
@@ -126,14 +127,27 @@ def alignment_manifest() -> dict[str, object]:
     return _run_logged("alignment_manifest", provenance_payload)
 
 
-def train_model(backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def train_model(
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     return _run_logged(
         "train_model",
-        lambda: train_forecaster(backend_preference=backend_preference, force_retrain=force_retrain).metrics,
+        lambda: train_forecaster(
+            backend_preference=backend_preference,
+            force_retrain=force_retrain,
+            scenario_rows=scenario_rows,
+        ).metrics,
     )
 
 
-def forecast_observables(steps: int = 6, backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def forecast_observables(
+    steps: int = 6,
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     return _run_logged(
         "forecast_observables",
         forecast_horizon,
@@ -141,12 +155,21 @@ def forecast_observables(steps: int = 6, backend_preference: str = "gpu", force_
         None,
         backend_preference,
         force_retrain,
+        scenario_rows,
     )
 
 
-def optimize_schedule(backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def optimize_schedule(
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     def _payload():
-        result = optimize_control_schedule(backend_preference=backend_preference, force_retrain=force_retrain)
+        result = optimize_control_schedule(
+            backend_preference=backend_preference,
+            force_retrain=force_retrain,
+            scenario_rows=scenario_rows,
+        )
         return {
             "baseline_schedule": result.baseline_schedule,
             "optimized_schedule": result.optimized_schedule,
@@ -155,6 +178,9 @@ def optimize_schedule(backend_preference: str = "gpu", force_retrain: bool = Fal
             "objective_trace": result.objective_trace,
             "summary": result.summary,
             "result_path": str(result.result_path),
+            "status": result.status,
+            "flags": list(result.flags),
+            "drift": result.drift,
         }
 
     return _run_logged(
@@ -163,31 +189,56 @@ def optimize_schedule(backend_preference: str = "gpu", force_retrain: bool = Fal
     )
 
 
-def validation_protocols(backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def validation_protocols(
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     def _payload():
-        protocols = design_validation_protocols(backend_preference=backend_preference, force_retrain=force_retrain)
+        protocols = design_validation_protocols(
+            backend_preference=backend_preference,
+            force_retrain=force_retrain,
+            scenario_rows=scenario_rows,
+        )
         return [protocol.__dict__ for protocol in protocols]
 
     return _run_logged("validation_protocols", _payload)
 
 
-def write_artifacts(backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def write_artifacts(
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     return _run_logged(
         "write_artifacts",
         write_project_artifacts,
         None,
         backend_preference,
         force_retrain,
+        scenario_rows,
     )
 
 
-def scenario_briefing(backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def scenario_briefing(
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     def _payload():
-        train_forecaster(backend_preference=backend_preference, force_retrain=force_retrain)
+        train_forecaster(
+            backend_preference=backend_preference,
+            force_retrain=force_retrain,
+            scenario_rows=scenario_rows,
+        )
         return {
             "backend": backend_payload(preference=backend_preference),
             "provenance": provenance_payload(),
-            "artifacts": write_project_artifacts(backend_preference=backend_preference, force_retrain=force_retrain),
+            "artifacts": write_project_artifacts(
+                backend_preference=backend_preference,
+                force_retrain=force_retrain,
+                scenario_rows=scenario_rows,
+            ),
             "latest_manifest": latest_artifact_manifest(),
         }
 

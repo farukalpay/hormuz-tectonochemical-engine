@@ -1,7 +1,31 @@
+# OS/editor noise
 .DS_Store
+
+# Local secrets
 .env
+.env.*
+!.env.example
+
+# Python cache/build outputs
 __pycache__/
 *.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.eggs/
+build/
+dist/
+pip-wheel-metadata/
+
+# Virtual environments
+.venv/
+.venv*/
+venv/
+env/
+
+# Runtime artifacts
 results/audit/
 results/evidence/
 results/published_runs/

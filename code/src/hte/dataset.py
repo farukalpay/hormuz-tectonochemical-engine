@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import replace
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -21,6 +21,62 @@ def load_aligned_dataset() -> pd.DataFrame:
     frame = pd.read_csv(DATA_ROOT / DATA_FILENAME)
     frame = frame.sort_values("timestamp").reset_index(drop=True)
     return frame
+
+
+def _coerce_numeric_row(
+    source_row: pd.Series,
+    row: dict[str, Any],
+    feature_columns: tuple[str, ...],
+    row_index: int,
+) -> pd.Series:
+    candidate = source_row.copy()
+    for key, value in row.items():
+        if key == "timestamp":
+            continue
+        if key not in feature_columns:
+            raise ValueError(f"scenario row {row_index} has unsupported feature column: {key}")
+        try:
+            candidate[key] = float(value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"scenario row {row_index} column '{key}' must be numeric") from exc
+
+    for column in feature_columns:
+        value = candidate[column]
+        try:
+            numeric = float(value)
+        except (TypeError, ValueError) as exc:
+            raise ValueError(f"scenario row {row_index} column '{column}' must be numeric") from exc
+        if not np.isfinite(numeric):
+            raise ValueError(f"scenario row {row_index} column '{column}' must be finite")
+        candidate[column] = numeric
+    return candidate
+
+
+def _inject_scenario_rows(
+    frame: pd.DataFrame,
+    config: AppConfig,
+    scenario_rows: list[dict[str, Any]] | None,
+) -> pd.DataFrame:
+    if not scenario_rows:
+        return frame
+
+    augmented = frame.copy()
+    feature_columns = config.data.sequence_columns
+    if not isinstance(scenario_rows, list):
+        raise ValueError("scenario_rows must be a list of row objects")
+
+    last_row = augmented.iloc[-1].copy()
+    for idx, row in enumerate(scenario_rows, start=1):
+        if not isinstance(row, dict):
+            raise ValueError(f"scenario row {idx} must be a JSON object")
+        next_row = _coerce_numeric_row(last_row, row, feature_columns, idx)
+        timestamp = row.get("timestamp")
+        if timestamp is None:
+            timestamp = f"scenario_step_{idx}"
+        next_row[config.data.timestamp_column] = str(timestamp)
+        augmented.loc[len(augmented)] = next_row
+        last_row = next_row
+    return augmented
 
 
 def _build_windows(
@@ -46,7 +102,15 @@ def _build_windows(
 
 
 def build_dataset_bundle(config: AppConfig) -> DatasetBundle:
+    return build_dataset_bundle_with_scenarios(config=config, scenario_rows=None)
+
+
+def build_dataset_bundle_with_scenarios(
+    config: AppConfig,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> DatasetBundle:
     frame = load_aligned_dataset()
+    frame = _inject_scenario_rows(frame, config, scenario_rows)
     feature_columns = config.data.sequence_columns
     target_columns = config.data.observable_columns
     values = frame.loc[:, feature_columns].to_numpy(dtype=np.float32)
@@ -104,6 +168,25 @@ def build_dataset_bundle(config: AppConfig) -> DatasetBundle:
         )
         for column in config.data.control_columns
     }
+    train_target_last_index = min(
+        len(frame) - 1,
+        train_end + config.data.lookback_steps + config.data.horizon_steps - 2,
+    )
+    training_frame = frame.iloc[: train_target_last_index + 1]
+    training_feature_bounds = {
+        column: (
+            float(training_frame[column].min()),
+            float(training_frame[column].max()),
+        )
+        for column in feature_columns
+    }
+    training_targets_actual = training_frame.loc[:, target_columns].to_numpy(dtype=np.float32)
+    if len(training_targets_actual) >= 2:
+        target_delta_actual = np.diff(training_targets_actual, axis=0)
+        target_delta_std_actual = target_delta_actual.std(axis=0)
+    else:
+        target_delta_std_actual = np.zeros((len(target_columns),), dtype=np.float32)
+    target_delta_std_scaled = (target_delta_std_actual / stats.target_std).astype(np.float32)
 
     return DatasetBundle(
         dataframe=frame,
@@ -121,6 +204,8 @@ def build_dataset_bundle(config: AppConfig) -> DatasetBundle:
         latest_window_timestamps=tuple(timestamps[-config.data.lookback_steps :]),
         stats=stats,
         control_bounds=control_bounds,
+        training_feature_bounds=training_feature_bounds,
+        target_delta_std_scaled=target_delta_std_scaled,
     )
 
 
@@ -162,3 +247,50 @@ def persistence_driver_schedule(bundle: DatasetBundle, config: AppConfig, steps:
             (schedule[:, index] - bundle.stats.feature_mean[feature_index]) / bundle.stats.feature_std[feature_index]
         )
     return normalized
+
+
+def latest_regime_drift(bundle: DatasetBundle, columns: tuple[str, ...]) -> dict[str, object]:
+    if not columns:
+        return {
+            "columns": [],
+            "max_abs_zscore": 0.0,
+            "mean_abs_zscore": 0.0,
+            "out_of_bounds_fraction": 0.0,
+            "details": {},
+        }
+
+    latest = bundle.dataframe.iloc[-1]
+    details: dict[str, dict[str, float | bool]] = {}
+    zscores: list[float] = []
+    oob_count = 0
+    for column in columns:
+        feature_index = bundle.feature_columns.index(column)
+        mean = float(bundle.stats.feature_mean[feature_index])
+        std = float(bundle.stats.feature_std[feature_index])
+        value = float(latest[column])
+        if std < 1.0e-6:
+            zscore = 0.0
+        else:
+            zscore = abs((value - mean) / std)
+        lower, upper = bundle.training_feature_bounds[column]
+        out_of_bounds = value < lower or value > upper
+        if out_of_bounds:
+            oob_count += 1
+        zscores.append(zscore)
+        details[column] = {
+            "value": value,
+            "train_mean": mean,
+            "train_std": std,
+            "abs_zscore": zscore,
+            "train_min": lower,
+            "train_max": upper,
+            "out_of_bounds": out_of_bounds,
+        }
+
+    return {
+        "columns": list(columns),
+        "max_abs_zscore": float(max(zscores)),
+        "mean_abs_zscore": float(np.mean(zscores)),
+        "out_of_bounds_fraction": float(oob_count / len(columns)),
+        "details": details,
+    }

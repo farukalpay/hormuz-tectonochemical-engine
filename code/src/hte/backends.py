@@ -90,6 +90,9 @@ def accelerator_context() -> dict[str, object]:
     host_gpu_vendor_hint = os.environ.get("HTE_HOST_GPU_VENDOR_HINT", "").strip().lower()
     if host_gpu_vendor_hint not in {"", "nvidia", "amd", "intel", "unknown"}:
         host_gpu_vendor_hint = ""
+    tensorflow_distribution = os.environ.get("HTE_TENSORFLOW_DISTRIBUTION", "").strip().lower()
+    if tensorflow_distribution not in {"", "auto", "cpu", "cuda", "rocm", "none"}:
+        tensorflow_distribution = ""
     nvidia_device_nodes = sorted(path.name for path in Path("/dev").glob("nvidia*"))
     render_nodes = sorted(path.name for path in Path("/dev/dri").glob("renderD*")) if Path("/dev/dri").exists() else []
     rocm_device_nodes_available = Path("/dev/kfd").exists() and bool(render_nodes)
@@ -105,6 +108,7 @@ def accelerator_context() -> dict[str, object]:
         "rocm_tools_available": shutil.which("rocminfo") is not None or shutil.which("rocm-smi") is not None,
         "cuda_visible_devices": os.environ.get("NVIDIA_VISIBLE_DEVICES", "").strip(),
         "host_gpu_vendor_hint": host_gpu_vendor_hint,
+        "tensorflow_distribution": tensorflow_distribution,
         "tensorflow_built_with_cuda": False,
     }
 
@@ -136,13 +140,43 @@ def _append_resolution_notes(
     vendors = context.get("gpu_vendors", [])
     host_vendor_hint = str(context.get("host_gpu_vendor_hint") or "").strip().lower()
     amd_hint = (isinstance(vendors, list) and "amd" in vendors) or host_vendor_hint == "amd"
+    if amd_hint and built_with_cuda:
+        notes.append("TensorFlow runtime targets CUDA/NVIDIA; AMD GPUs require a ROCm TensorFlow runtime.")
     if amd_hint and not context.get("rocm_device_nodes_available"):
         notes.append("AMD GPU is present in PCI inventory, but ROCm device nodes are unavailable (/dev/kfd and /dev/dri/renderD*).")
+    if amd_hint and context.get("rocm_device_nodes_available") and not gpu_devices:
+        notes.append("ROCm device nodes are present, but TensorFlow still reports no GPU. Check ROCm image compatibility and GPU architecture support.")
     if context.get("is_container") and not nvidia_nodes and not context.get("rocm_device_nodes_available"):
         notes.append("Container has no GPU device mounts; use --gpus all (NVIDIA) or ROCm device mounts (AMD).")
 
 
-def tensorflow_status(preference: str = "gpu", *, context: dict[str, object] | None = None) -> TensorFlowProbe:
+def _configure_tensorflow_runtime(tf) -> tuple[list[object], list[str]]:
+    runtime_notes: list[str] = []
+    gpu_devices = list(tf.config.list_physical_devices("GPU"))
+
+    try:
+        tf.config.optimizer.set_jit(False)
+        runtime_notes.append("TensorFlow XLA JIT is disabled for training stability.")
+    except Exception:
+        pass
+
+    for device in gpu_devices:
+        try:
+            tf.config.experimental.set_memory_growth(device, True)
+        except Exception:
+            continue
+    if gpu_devices:
+        runtime_notes.append("TensorFlow GPU memory growth is enabled.")
+
+    return gpu_devices, runtime_notes
+
+
+def tensorflow_status(
+    preference: str = "gpu",
+    *,
+    context: dict[str, object] | None = None,
+    active_probe: bool = True,
+) -> TensorFlowProbe:
     requested = preference.strip().lower() if preference else "gpu"
     accelerator = accelerator_context() if context is None else context
     notes: list[str] = []
@@ -164,17 +198,33 @@ def tensorflow_status(preference: str = "gpu", *, context: dict[str, object] | N
             notes=tuple(notes),
         )
 
+    gpu_devices, runtime_notes = _configure_tensorflow_runtime(tf)
+    notes.extend(runtime_notes)
     built_with_cuda = bool(getattr(tf.test, "is_built_with_cuda", lambda: False)())
     accelerator["tensorflow_built_with_cuda"] = built_with_cuda
     physical_devices = tuple(f"{device.device_type}:{device.name}" for device in tf.config.list_physical_devices())
     visible_devices = tuple(f"{device.device_type}:{device.name}" for device in tf.config.experimental.get_visible_devices())
-    gpu_devices = [device for device in tf.config.list_physical_devices("GPU")]
     metal_devices = tuple(device.name for device in gpu_devices)
     resolved_device = "/CPU:0"
 
-    try:
-        if requested in {"gpu", "metal", "auto"} and gpu_devices:
-            resolved_device = "/GPU:0"
+    if requested in {"gpu", "metal", "auto"} and gpu_devices:
+        resolved_device = "/GPU:0"
+        if not active_probe:
+            notes.append("TensorFlow GPU device is visible; active probe was skipped.")
+            return TensorFlowProbe(
+                available=True,
+                version=tf.__version__,
+                requested_preference=requested,
+                resolved_device=resolved_device,
+                physical_devices=physical_devices,
+                visible_devices=visible_devices,
+                metal_devices=metal_devices,
+                probe_operation="visibility-only",
+                probe_success=False,
+                notes=tuple(notes),
+            )
+
+        try:
             with tf.device(resolved_device):
                 matrix = tf.constant([[1.0, 2.0], [3.0, 4.0]], dtype=tf.float32)
                 tf.matmul(matrix, matrix).numpy()
@@ -191,9 +241,31 @@ def tensorflow_status(preference: str = "gpu", *, context: dict[str, object] | N
                 probe_success=True,
                 notes=tuple(notes),
             )
-    except Exception as exc:  # pragma: no cover - depends on host-specific Metal behavior
-        notes.append(f"GPU probe failed and training will fall back to CPU: {exc}")
-        resolved_device = "/CPU:0"
+        except Exception as exc:  # pragma: no cover - depends on host-specific Metal behavior
+            notes.append(f"GPU probe failed and training will fall back to CPU: {exc}")
+            resolved_device = "/CPU:0"
+
+    if not active_probe:
+        _append_resolution_notes(
+            notes,
+            requested=requested,
+            gpu_devices=gpu_devices,
+            resolved_device=resolved_device,
+            context=accelerator,
+            built_with_cuda=built_with_cuda,
+        )
+        return TensorFlowProbe(
+            available=True,
+            version=tf.__version__,
+            requested_preference=requested,
+            resolved_device=resolved_device,
+            physical_devices=physical_devices,
+            visible_devices=visible_devices,
+            metal_devices=metal_devices,
+            probe_operation="visibility-only",
+            probe_success=False,
+            notes=tuple(notes),
+        )
 
     with tf.device(resolved_device):
         matrix = tf.constant([[1.0, 2.0], [3.0, 4.0]], dtype=tf.float32)

@@ -1,0 +1,203 @@
+{
+  "baseline_schedule": [
+    {
+      "steam_to_carbon_ratio": 2.7414400577545166,
+      "reformer_temperature_c": 763.5921630859375,
+      "synthesis_pressure_bar": 45.31252670288086,
+      "recycle_ratio": 0.7235275506973267,
+      "ro_recovery_ratio": 0.40566369891166687
+    },
+    {
+      "steam_to_carbon_ratio": 2.7363858222961426,
+      "reformer_temperature_c": 763.5921630859375,
+      "synthesis_pressure_bar": 45.296417236328125,
+      "recycle_ratio": 0.7235275506973267,
+      "ro_recovery_ratio": 0.40566369891166687
+    },
+    {
+      "steam_to_carbon_ratio": 2.7313313484191895,
+      "reformer_temperature_c": 763.5921630859375,
+      "synthesis_pressure_bar": 45.280303955078125,
+      "recycle_ratio": 0.7235275506973267,
+      "ro_recovery_ratio": 0.40566369891166687
+    }
+  ],
+  "optimized_schedule": [
+    {
+      "steam_to_carbon_ratio": 2.7637534141540527,
+      "reformer_temperature_c": 763.5964965820312,
+      "synthesis_pressure_bar": 45.272430419921875,
+      "recycle_ratio": 0.7235385775566101,
+      "ro_recovery_ratio": 0.405671626329422
+    },
+    {
+      "steam_to_carbon_ratio": 2.740382432937622,
+      "reformer_temperature_c": 763.5962524414062,
+      "synthesis_pressure_bar": 45.23630905151367,
+      "recycle_ratio": 0.7235386371612549,
+      "ro_recovery_ratio": 0.4056711494922638
+    },
+    {
+      "steam_to_carbon_ratio": 2.736696243286133,
+      "reformer_temperature_c": 763.5962524414062,
+      "synthesis_pressure_bar": 45.23945999145508,
+      "recycle_ratio": 0.7235385775566101,
+      "ro_recovery_ratio": 0.40567120909690857
+    }
+  ],
+  "baseline_predictions": [
+    {
+      "h2_co_ratio": 1.9287433624267578,
+      "methane_slip_pct": 8.689939498901367,
+      "methanol_selectivity_pct": 71.6143798828125,
+      "ftir_methoxy_ratio": 1.1980314254760742,
+      "urea_yield_pct": 75.53406524658203,
+      "ftir_urea_carbonyl_ratio": 1.169019341468811,
+      "nitrate_mg_l": 5.738588809967041,
+      "permeate_conductivity_uScm": 253.79891967773438
+    },
+    {
+      "h2_co_ratio": 1.8729631900787354,
+      "methane_slip_pct": 9.486509323120117,
+      "methanol_selectivity_pct": 71.39160919189453,
+      "ftir_methoxy_ratio": 1.1929662227630615,
+      "urea_yield_pct": 74.93185424804688,
+      "ftir_urea_carbonyl_ratio": 1.1663950681686401,
+      "nitrate_mg_l": 9.269783973693848,
+      "permeate_conductivity_uScm": 310.7130432128906
+    },
+    {
+      "h2_co_ratio": 1.811590313911438,
+      "methane_slip_pct": 10.24223518371582,
+      "methanol_selectivity_pct": 70.95624542236328,
+      "ftir_methoxy_ratio": 1.1817766427993774,
+      "urea_yield_pct": 74.8865966796875,
+      "ftir_urea_carbonyl_ratio": 1.1629252433776855,
+      "nitrate_mg_l": 20.536157608032227,
+      "permeate_conductivity_uScm": 446.2099304199219
+    }
+  ],
+  "optimized_predictions": [
+    {
+      "h2_co_ratio": 1.9287433624267578,
+      "methane_slip_pct": 8.689939498901367,
+      "methanol_selectivity_pct": 71.6143798828125,
+      "ftir_methoxy_ratio": 1.1980314254760742,
+      "urea_yield_pct": 75.53406524658203,
+      "ftir_urea_carbonyl_ratio": 1.169019341468811,
+      "nitrate_mg_l": 5.738588809967041,
+      "permeate_conductivity_uScm": 253.79891967773438
+    },
+    {
+      "h2_co_ratio": 1.8729584217071533,
+      "methane_slip_pct": 9.486551284790039,
+      "methanol_selectivity_pct": 71.39167785644531,
+      "ftir_methoxy_ratio": 1.1929664611816406,
+      "urea_yield_pct": 74.93213653564453,
+      "ftir_urea_carbonyl_ratio": 1.166394829750061,
+      "nitrate_mg_l": 9.269775390625,
+      "permeate_conductivity_uScm": 310.7132568359375
+    },
+    {
+      "h2_co_ratio": 1.811572790145874,
+      "methane_slip_pct": 10.242317199707031,
+      "methanol_selectivity_pct": 70.95687866210938,
+      "ftir_methoxy_ratio": 1.1817777156829834,
+      "urea_yield_pct": 74.88763427734375,
+      "ftir_urea_carbonyl_ratio": 1.1629259586334229,
+      "nitrate_mg_l": 20.536108016967773,
+      "permeate_conductivity_uScm": 446.21136474609375
+    }
+  ],
+  "objective_trace": [
+    23.787694931030273,
+    23.787748336791992,
+    23.78772735595703,
+    23.78772735595703,
+    23.78769302368164,
+    23.78767967224121,
+    23.787702560424805,
+    23.787708282470703
+  ],
+  "summary": {
+    "baseline_mean_methane_slip_pct": 9.472894668579102,
+    "optimized_mean_methane_slip_pct": 9.472935994466146,
+    "baseline_mean_urea_yield_pct": 75.1175053914388,
+    "optimized_mean_urea_yield_pct": 75.11794535319011,
+    "baseline_mean_permeate_conductivity_uScm": 336.9072977701823,
+    "optimized_mean_permeate_conductivity_uScm": 336.90784708658856
+  },
+  "figure_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/optimized_control_schedule_lb6_hz1_u32-24-16.png",
+  "resolved_device": "/GPU:0",
+  "status": "ok",
+  "flags": [],
+  "drift": {
+    "columns": [
+      "shipping_risk_index",
+      "insurance_spread_index",
+      "grid_stability_index",
+      "inspection_access_index",
+      "feed_gas_index",
+      "chloride_load_index"
+    ],
+    "max_abs_zscore": 13.517234572962561,
+    "mean_abs_zscore": 7.085109351741235,
+    "out_of_bounds_fraction": 1.0,
+    "details": {
+      "shipping_risk_index": {
+        "value": 0.4617232369360078,
+        "train_mean": 0.18474528193473816,
+        "train_std": 0.07366587221622467,
+        "abs_zscore": 3.759922290586361,
+        "train_min": 0.06,
+        "train_max": 0.3121247450074722,
+        "out_of_bounds": true
+      },
+      "insurance_spread_index": {
+        "value": 0.4761742213053452,
+        "train_mean": 0.27465641498565674,
+        "train_std": 0.06341519951820374,
+        "abs_zscore": 3.177752460777822,
+        "train_min": 0.1449180309826072,
+        "train_max": 0.3555420529125324,
+        "out_of_bounds": true
+      },
+      "grid_stability_index": {
+        "value": 0.6831449715078369,
+        "train_mean": 0.9065737128257751,
+        "train_std": 0.01895451545715332,
+        "abs_zscore": 11.787626110675257,
+        "train_min": 0.8692048828903435,
+        "train_max": 0.9479910524258268,
+        "out_of_bounds": true
+      },
+      "inspection_access_index": {
+        "value": 0.7387139239107358,
+        "train_mean": 0.9513617157936096,
+        "train_std": 0.015731604769825935,
+        "abs_zscore": 13.517234572962561,
+        "train_min": 0.914184063158018,
+        "train_max": 0.987323085059684,
+        "out_of_bounds": true
+      },
+      "feed_gas_index": {
+        "value": 0.801500024078588,
+        "train_mean": 0.8966244459152222,
+        "train_std": 0.023180818185210228,
+        "abs_zscore": 4.103583448893328,
+        "train_min": 0.8389303674115759,
+        "train_max": 0.9398409638012624,
+        "out_of_bounds": true
+      },
+      "chloride_load_index": {
+        "value": 0.406874004679902,
+        "train_mean": 0.31607785820961,
+        "train_std": 0.014728785492479801,
+        "abs_zscore": 6.164537226552083,
+        "train_min": 0.2733738023481272,
+        "train_max": 0.3447386635909968,
+        "out_of_bounds": true
+      }
+    }
+  }
+}

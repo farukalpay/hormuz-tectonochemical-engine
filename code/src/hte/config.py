@@ -45,12 +45,23 @@ class DataConfig:
 class TrainingConfig:
     seed: int = 42
     batch_size: int = 16
-    max_epochs: int = 48
-    learning_rate: float = 3.0e-3
-    patience: int = 10
+    max_epochs: int = 72
+    learning_rate: float = 1.0e-3
+    patience: int = 12
+    optimizer_clipnorm: float = 1.0
+    optimizer_epsilon: float = 1.0e-7
+    determinism_mode: str = "auto"
+    run_eagerly: bool = False
+    jit_compile: bool = False
+    steps_per_execution: int = 1
+    residual_output_scale: float = 2.5
+    forecast_delta_clip_sigma: float = 3.0
     lstm_units: tuple[int, int, int] = (128, 96, 64)
     attention_heads: int = 4
     dropout: float = 0.12
+    lstm_use_cudnn: bool = False
+    lstm_unroll: bool = True
+    model_variant: str = "stacked_attention"
 
 
 @dataclass(frozen=True)

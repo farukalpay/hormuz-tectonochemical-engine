@@ -36,8 +36,18 @@ code/scripts/deploy_remote_mcp.sh
 Template default endpoint path is `/mcp/hormuz`.
 FastMCP framework default path is `/mcp` if `FASTMCP_STREAMABLE_HTTP_PATH` is not set.
 Container restart policy is `unless-stopped` so it auto-starts after reboot.
+Default streamable mode is stateless (`HTE_MCP_STATELESS_HTTP=true`) to prevent session-stickiness failures.
+GPU mode is auto-detected on deploy (`HTE_GPU_MODE=auto`) and can be pinned to `nvidia`, `rocm`, or `none`.
+TensorFlow distribution is resolved independently (`HTE_TENSORFLOW_DISTRIBUTION=auto|cuda|rocm|cpu`), with `auto` mapping to the resolved GPU mode.
+ROCm defaults to `HTE_ROCM_BASE_IMAGE=rocm/tensorflow:latest`; set `HTE_ROCM_HSA_OVERRIDE_GFX_VERSION` only if the host GPU needs an explicit ROCm architecture override.
+Use `HTE_DOCKER_BASE_IMAGE` to pin a custom base image for any mode.
+Set `HTE_REQUIRE_GPU=true` to fail deployment when backend probe cannot resolve `GPU:0`.
+The runtime disables TensorFlow XLA JIT and enables GPU memory growth before probing or training to avoid unstable ROCm autotune paths.
+Training determinism defaults to `auto`: CPU runs use deterministic ops, ROCm GPU runs keep seeded execution without forcing the determinism path that breaks training.
+When `GPU:0` becomes healthy again, cached CPU-fallback models are retrained instead of being silently reused.
 Default OAuth consent is approve-only unless `HTE_OAUTH_APPROVAL_PASSWORD_HASH` is configured.
 Set `HTE_OAUTH_PUBLIC_BASE_URL` to your HTTPS domain for stable OAuth metadata URLs.
+`HTE_OAUTH_PUBLIC_BASE_URL` and `HTE_ARTIFACT_PUBLIC_BASE_URL` should use `https://`.
 Authorize UI endpoint is `<base-url>/mcp/hormuz/authorize`.
 Artifact links are enabled by default and served from `<base-url>/mcp/hormuz/artifacts/...`.
 Disable with `HTE_ARTIFACT_LINKS_ENABLED=false` if a host does not want public artifact URLs.

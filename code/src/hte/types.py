@@ -77,6 +77,8 @@ class DatasetBundle:
     latest_window_timestamps: tuple[str, ...]
     stats: NormalizationStats
     control_bounds: dict[str, tuple[float, float]]
+    training_feature_bounds: dict[str, tuple[float, float]]
+    target_delta_std_scaled: np.ndarray
 
 
 @dataclass(frozen=True)
@@ -98,6 +100,9 @@ class OptimizationResult:
     objective_trace: list[float]
     summary: dict[str, float]
     result_path: Path
+    status: str = "ok"
+    flags: tuple[str, ...] = ()
+    drift: dict[str, Any] | None = None
 
 
 @dataclass(frozen=True)

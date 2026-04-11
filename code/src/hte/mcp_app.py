@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 from starlette.requests import Request
@@ -52,9 +53,17 @@ def alignment_manifest_tool() -> dict[str, object]:
 
 
 @mcp.tool()
-def train_model_tool(backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def train_model_tool(
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     """Train the three-layer LSTM plus temporal-attention forecaster."""
-    return train_model(backend_preference=backend_preference, force_retrain=force_retrain)
+    return train_model(
+        backend_preference=backend_preference,
+        force_retrain=force_retrain,
+        scenario_rows=scenario_rows,
+    )
 
 
 @mcp.tool()
@@ -62,33 +71,71 @@ def forecast_observables_tool(
     steps: int = 6,
     backend_preference: str = "gpu",
     force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
 ) -> dict[str, object]:
     """Forecast aligned chemical observables for the next horizon."""
-    return forecast_observables(steps=steps, backend_preference=backend_preference, force_retrain=force_retrain)
+    return forecast_observables(
+        steps=steps,
+        backend_preference=backend_preference,
+        force_retrain=force_retrain,
+        scenario_rows=scenario_rows,
+    )
 
 
 @mcp.tool()
-def optimize_schedule_tool(backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def optimize_schedule_tool(
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     """Run the differentiable multi-objective control optimizer over the future horizon."""
-    return optimize_schedule(backend_preference=backend_preference, force_retrain=force_retrain)
+    return optimize_schedule(
+        backend_preference=backend_preference,
+        force_retrain=force_retrain,
+        scenario_rows=scenario_rows,
+    )
 
 
 @mcp.tool()
-def validation_protocols_tool(backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def validation_protocols_tool(
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     """Return lab protocols with expected GC, FTIR, IC, yield, and conductivity outputs."""
-    return validation_protocols(backend_preference=backend_preference, force_retrain=force_retrain)
+    return validation_protocols(
+        backend_preference=backend_preference,
+        force_retrain=force_retrain,
+        scenario_rows=scenario_rows,
+    )
 
 
 @mcp.tool()
-def write_artifacts_tool(backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def write_artifacts_tool(
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     """Rebuild model, forecast, optimization, figures, and manifest artifacts."""
-    return write_artifacts(backend_preference=backend_preference, force_retrain=force_retrain)
+    return write_artifacts(
+        backend_preference=backend_preference,
+        force_retrain=force_retrain,
+        scenario_rows=scenario_rows,
+    )
 
 
 @mcp.tool()
-def scenario_briefing_tool(backend_preference: str = "gpu", force_retrain: bool = False) -> dict[str, object]:
+def scenario_briefing_tool(
+    backend_preference: str = "gpu",
+    force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
+) -> dict[str, object]:
     """Return the shortest single-call briefing payload for MCP clients."""
-    return scenario_briefing(backend_preference=backend_preference, force_retrain=force_retrain)
+    return scenario_briefing(
+        backend_preference=backend_preference,
+        force_retrain=force_retrain,
+        scenario_rows=scenario_rows,
+    )
 
 
 @mcp.tool()

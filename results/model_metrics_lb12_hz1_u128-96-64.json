@@ -10,39 +10,128 @@
     "permeate_conductivity_uScm"
   ],
   "test_mae": {
-    "h2_co_ratio": 0.14518097043037415,
-    "methane_slip_pct": 1.2662441730499268,
-    "methanol_selectivity_pct": 3.8872904777526855,
-    "ftir_methoxy_ratio": 0.05851370096206665,
-    "urea_yield_pct": 4.2327423095703125,
-    "ftir_urea_carbonyl_ratio": 0.04882030934095383,
-    "nitrate_mg_l": 0.4473460614681244,
-    "permeate_conductivity_uScm": 15.972115516662598
+    "h2_co_ratio": 0.05615508556365967,
+    "methane_slip_pct": 0.48762011528015137,
+    "methanol_selectivity_pct": 3.521829843521118,
+    "ftir_methoxy_ratio": 0.05357864126563072,
+    "urea_yield_pct": 3.4744160175323486,
+    "ftir_urea_carbonyl_ratio": 0.02972417138516903,
+    "nitrate_mg_l": 0.25261780619621277,
+    "permeate_conductivity_uScm": 8.938862800598145
   },
   "test_rmse": {
-    "h2_co_ratio": 0.23200012743473053,
-    "methane_slip_pct": 2.141557455062866,
-    "methanol_selectivity_pct": 5.680625915527344,
-    "ftir_methoxy_ratio": 0.08542846888303757,
-    "urea_yield_pct": 5.385997772216797,
-    "ftir_urea_carbonyl_ratio": 0.06205061450600624,
-    "nitrate_mg_l": 0.7347057461738586,
-    "permeate_conductivity_uScm": 25.00401496887207
+    "h2_co_ratio": 0.08693729341030121,
+    "methane_slip_pct": 0.6803774833679199,
+    "methanol_selectivity_pct": 3.785281181335449,
+    "ftir_methoxy_ratio": 0.058500178158283234,
+    "urea_yield_pct": 3.8511407375335693,
+    "ftir_urea_carbonyl_ratio": 0.03436179459095001,
+    "nitrate_mg_l": 0.3767715096473694,
+    "permeate_conductivity_uScm": 11.814719200134277
   },
-  "mean_test_mae": 3.25728178024292,
-  "mean_test_rmse": 4.915797233581543,
+  "mean_test_mae": 2.1018505096435547,
+  "mean_test_rmse": 2.5860114097595215,
   "backend": {
+    "requested_device": "/GPU:0",
     "resolved_device": "/GPU:0",
     "version": "2.16.2",
     "notes": [
-      "metal-compatible GPU probe succeeded"
-    ]
+      "TensorFlow XLA JIT is disabled for training stability.",
+      "TensorFlow GPU memory growth is enabled.",
+      "TensorFlow GPU probe succeeded"
+    ],
+    "runtime_signature": {
+      "platform": "Darwin",
+      "machine": "arm64",
+      "tensorflow_version": "2.16.2"
+    }
   },
   "training": {
     "lookback_steps": 12,
-    "max_epochs": 48,
+    "max_epochs": 72,
     "batch_size": 16,
-    "epochs_completed": 11
+    "epochs_completed": 18
+  },
+  "convergence": {
+    "status": "ok",
+    "attempts": [
+      {
+        "device": "/GPU:0",
+        "epochs_completed": 18,
+        "history_non_finite": false,
+        "prediction_non_finite": false
+      }
+    ],
+    "cpu_fallback_used": false
+  },
+  "drift": {
+    "columns": [
+      "shipping_risk_index",
+      "insurance_spread_index",
+      "grid_stability_index",
+      "inspection_access_index",
+      "feed_gas_index",
+      "chloride_load_index"
+    ],
+    "max_abs_zscore": 13.51869367430145,
+    "mean_abs_zscore": 7.06636758294442,
+    "out_of_bounds_fraction": 1.0,
+    "details": {
+      "shipping_risk_index": {
+        "value": 0.4617232369360078,
+        "train_mean": 0.18376509845256805,
+        "train_std": 0.07455646991729736,
+        "abs_zscore": 3.7281558366667316,
+        "train_min": 0.06,
+        "train_max": 0.3121247450074722,
+        "out_of_bounds": true
+      },
+      "insurance_spread_index": {
+        "value": 0.4761742213053452,
+        "train_mean": 0.2730078101158142,
+        "train_std": 0.06435426324605942,
+        "abs_zscore": 3.1570000329693992,
+        "train_min": 0.1449180309826072,
+        "train_max": 0.3555420529125324,
+        "out_of_bounds": true
+      },
+      "grid_stability_index": {
+        "value": 0.6831449715078369,
+        "train_mean": 0.9067125916481018,
+        "train_std": 0.019211331382393837,
+        "abs_zscore": 11.637278837694335,
+        "train_min": 0.8692048828903435,
+        "train_max": 0.9479910524258268,
+        "out_of_bounds": true
+      },
+      "inspection_access_index": {
+        "value": 0.7387139239107358,
+        "train_mean": 0.9514798521995544,
+        "train_std": 0.01573864556849003,
+        "abs_zscore": 13.51869367430145,
+        "train_min": 0.914184063158018,
+        "train_max": 0.987323085059684,
+        "out_of_bounds": true
+      },
+      "feed_gas_index": {
+        "value": 0.801500024078588,
+        "train_mean": 0.8968742489814758,
+        "train_std": 0.023309744894504547,
+        "abs_zscore": 4.091603118546915,
+        "train_min": 0.8389303674115759,
+        "train_max": 0.9398409638012624,
+        "out_of_bounds": true
+      },
+      "chloride_load_index": {
+        "value": 0.406874004679902,
+        "train_mean": 0.3163343071937561,
+        "train_std": 0.014450574293732643,
+        "abs_zscore": 6.265473997487687,
+        "train_min": 0.2733738023481272,
+        "train_max": 0.3447386635909968,
+        "out_of_bounds": true
+      }
+    }
   },
   "normalization": {
     "feature_columns": [
@@ -140,7 +229,7 @@
     ]
   },
   "figures": {
-    "training_history_figure": "/Users/farukalpay/Desktop/manuscript/hormuz-tectonochemical-engine/results/figures/training_history_lb12_hz1_u128-96-64.png",
-    "holdout_forecast_figure": "/Users/farukalpay/Desktop/manuscript/hormuz-tectonochemical-engine/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png"
+    "training_history_figure": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/training_history_lb12_hz1_u128-96-64.png",
+    "holdout_forecast_figure": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png"
   }
 }

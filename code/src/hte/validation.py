@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 from .calibration import _config_tag, forecast_horizon, train_forecaster
 from .config import AppConfig, build_app_config
@@ -12,11 +13,25 @@ def design_validation_protocols(
     config: AppConfig | None = None,
     backend_preference: str = "gpu",
     force_retrain: bool = False,
+    scenario_rows: list[dict[str, Any]] | None = None,
 ) -> list[ExperimentProtocol]:
     app_config = build_app_config() if config is None else config
     tag = _config_tag(app_config)
-    training = train_forecaster(config=app_config, backend_preference=backend_preference, force_retrain=force_retrain)
-    forecast = forecast_horizon(steps=4, config=app_config, backend_preference=backend_preference, force_retrain=False)
+    training = train_forecaster(
+        config=app_config,
+        backend_preference=backend_preference,
+        force_retrain=force_retrain,
+        scenario_rows=scenario_rows,
+    )
+    forecast = forecast_horizon(
+        steps=4,
+        config=app_config,
+        backend_preference=backend_preference,
+        force_retrain=False,
+        scenario_rows=scenario_rows,
+    )
+    if not forecast["forecast"]:
+        raise RuntimeError("ForecastUnavailableError: forecast payload is empty")
     first_step = forecast["forecast"][0]
     mae = training.metrics["test_mae"]
 

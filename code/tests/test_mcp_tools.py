@@ -19,6 +19,7 @@ def _test_config() -> AppConfig:
 def test_backend_probe_surface() -> None:
     payload = backend_payload()
     assert "resolved_device" in payload
+    assert "tensorflow_distribution" in payload["accelerator_context"]
     assert payload["probe_success"] is True or payload["available"] is False
 
 

@@ -47,6 +47,10 @@ done
 : "${FASTMCP_PORT:=8000}"
 : "${FASTMCP_STREAMABLE_HTTP_PATH:=/mcp/hormuz}"
 : "${HTE_GPU_MODE:=auto}"
+: "${HTE_TENSORFLOW_DISTRIBUTION:=auto}"
+: "${HTE_DOCKER_BASE_IMAGE:=}"
+: "${HTE_ROCM_BASE_IMAGE:=rocm/tensorflow:latest}"
+: "${HTE_ROCM_HSA_OVERRIDE_GFX_VERSION:=}"
 : "${HTE_REQUIRE_GPU:=false}"
 : "${HTE_MCP_STATELESS_HTTP:=true}"
 : "${HTE_MCP_MAX_CONCURRENT_REQUESTS:=6}"
@@ -120,6 +124,46 @@ resolve_gpu_mode() {
   esac
 }
 
+resolve_tensorflow_distribution() {
+  local requested_distribution
+  local gpu_mode
+  requested_distribution="$(lower "$1")"
+  gpu_mode="$(lower "$2")"
+  case "$requested_distribution" in
+    auto)
+      case "$gpu_mode" in
+        rocm) printf '%s' "rocm" ;;
+        nvidia) printf '%s' "cuda" ;;
+        *) printf '%s' "cpu" ;;
+      esac
+      ;;
+    none)
+      printf '%s' "cpu"
+      ;;
+    cpu|cuda|rocm)
+      printf '%s' "$requested_distribution"
+      ;;
+    *)
+      echo "HTE_TENSORFLOW_DISTRIBUTION must be one of: auto, cpu, cuda, rocm" >&2
+      exit 1
+      ;;
+  esac
+}
+
+resolve_base_image() {
+  local tensorflow_distribution
+  tensorflow_distribution="$1"
+  if [[ -n "$HTE_DOCKER_BASE_IMAGE" ]]; then
+    printf '%s' "$HTE_DOCKER_BASE_IMAGE"
+    return
+  fi
+  if [[ "$tensorflow_distribution" == "rocm" ]]; then
+    printf '%s' "$HTE_ROCM_BASE_IMAGE"
+    return
+  fi
+  printf '%s' "python:3.11-slim"
+}
+
 detect_gpu_vendor_hint() {
   if "${SSH_CMD[@]}" "lspci -nn 2>/dev/null | grep -Eiq 'nvidia|10de:'"; then
     printf '%s' "nvidia"
@@ -149,8 +193,58 @@ echo "Syncing repository to ${SSH_TARGET}:${HTE_REMOTE_APP_DIR} ..."
   "$ROOT_DIR/" \
   "${SSH_TARGET}:${HTE_REMOTE_APP_DIR}/"
 
+RESOLVED_GPU_MODE="$(resolve_gpu_mode "$HTE_GPU_MODE")"
+GPU_VENDOR_HINT="$(detect_gpu_vendor_hint)"
+RESOLVED_TENSORFLOW_DISTRIBUTION="$(resolve_tensorflow_distribution "$HTE_TENSORFLOW_DISTRIBUTION" "$RESOLVED_GPU_MODE")"
+RESOLVED_BASE_IMAGE="$(resolve_base_image "$RESOLVED_TENSORFLOW_DISTRIBUTION")"
+INSTALL_TENSORFLOW="true"
+if [[ "$RESOLVED_TENSORFLOW_DISTRIBUTION" == "rocm" ]]; then
+  INSTALL_TENSORFLOW="false"
+fi
+
+if [[ "$RESOLVED_GPU_MODE" == "rocm" && "$RESOLVED_TENSORFLOW_DISTRIBUTION" != "rocm" ]]; then
+  echo "Incompatible deployment: resolved GPU mode is 'rocm' but TensorFlow distribution is '${RESOLVED_TENSORFLOW_DISTRIBUTION}'." >&2
+  echo "Set HTE_TENSORFLOW_DISTRIBUTION=auto or rocm for AMD/ROCm hosts." >&2
+  exit 1
+fi
+if [[ "$RESOLVED_GPU_MODE" == "nvidia" && "$RESOLVED_TENSORFLOW_DISTRIBUTION" == "rocm" ]]; then
+  echo "Incompatible deployment: resolved GPU mode is 'nvidia' but TensorFlow distribution is 'rocm'." >&2
+  exit 1
+fi
+
+GPU_DOCKER_FLAGS=""
+case "$RESOLVED_GPU_MODE" in
+  nvidia)
+    GPU_DOCKER_FLAGS="--gpus all"
+    ;;
+  rocm)
+    GPU_DOCKER_FLAGS="--device /dev/kfd --device /dev/dri --group-add video"
+    ;;
+  none)
+    GPU_DOCKER_FLAGS=""
+    ;;
+esac
+ROCM_RUNTIME_ENV_FLAGS=""
+if [[ "$RESOLVED_GPU_MODE" == "rocm" && -n "${HTE_ROCM_HSA_OVERRIDE_GFX_VERSION:-}" ]]; then
+  ROCM_RUNTIME_ENV_FLAGS="-e 'HSA_OVERRIDE_GFX_VERSION=${HTE_ROCM_HSA_OVERRIDE_GFX_VERSION}'"
+fi
+echo "GPU mode request='${HTE_GPU_MODE}', resolved='${RESOLVED_GPU_MODE}'."
+echo "Host GPU vendor hint='${GPU_VENDOR_HINT}'."
+echo "TensorFlow distribution request='${HTE_TENSORFLOW_DISTRIBUTION}', resolved='${RESOLVED_TENSORFLOW_DISTRIBUTION}'."
+echo "Docker base image='${RESOLVED_BASE_IMAGE}'."
+if [[ "$RESOLVED_GPU_MODE" == "rocm" ]]; then
+  echo "Warning: ROCm mode selected. Ensure host ROCm drivers and a ROCm-compatible TensorFlow build are installed."
+fi
+if [[ -n "${HTE_ROCM_HSA_OVERRIDE_GFX_VERSION:-}" ]]; then
+  echo "Using ROCm HSA override GFX version '${HTE_ROCM_HSA_OVERRIDE_GFX_VERSION}'."
+fi
+
 echo "Building Docker image ${HTE_REMOTE_IMAGE_NAME} ..."
-"${SSH_CMD[@]}" "cd '$HTE_REMOTE_APP_DIR' && docker build -t '$HTE_REMOTE_IMAGE_NAME' ."
+"${SSH_CMD[@]}" "cd '$HTE_REMOTE_APP_DIR' && docker build \
+  --build-arg 'BASE_IMAGE=${RESOLVED_BASE_IMAGE}' \
+  --build-arg 'HTE_TENSORFLOW_DISTRIBUTION=${RESOLVED_TENSORFLOW_DISTRIBUTION}' \
+  --build-arg 'INSTALL_TENSORFLOW=${INSTALL_TENSORFLOW}' \
+  -t '$HTE_REMOTE_IMAGE_NAME' ."
 
 echo "Preparing container ${HTE_REMOTE_CONTAINER_NAME} ..."
 existing_container_id="$("${SSH_CMD[@]}" "docker ps -a --filter 'name=^/${HTE_REMOTE_CONTAINER_NAME}\$' --format '{{.ID}}'")"
@@ -166,33 +260,15 @@ fi
 echo "Checking TCP port ${HTE_REMOTE_MCP_PORT} ..."
 "${SSH_CMD[@]}" "if ss -ltn '( sport = :${HTE_REMOTE_MCP_PORT} )' | grep -q LISTEN; then echo 'Port ${HTE_REMOTE_MCP_PORT} is already in use.' >&2; exit 1; fi"
 
-RESOLVED_GPU_MODE="$(resolve_gpu_mode "$HTE_GPU_MODE")"
-GPU_VENDOR_HINT="$(detect_gpu_vendor_hint)"
-GPU_DOCKER_FLAGS=""
-case "$RESOLVED_GPU_MODE" in
-  nvidia)
-    GPU_DOCKER_FLAGS="--gpus all"
-    ;;
-  rocm)
-    GPU_DOCKER_FLAGS="--device /dev/kfd --device /dev/dri --group-add video"
-    ;;
-  none)
-    GPU_DOCKER_FLAGS=""
-    ;;
-esac
-echo "GPU mode request='${HTE_GPU_MODE}', resolved='${RESOLVED_GPU_MODE}'."
-echo "Host GPU vendor hint='${GPU_VENDOR_HINT}'."
-if [[ "$RESOLVED_GPU_MODE" == "rocm" ]]; then
-  echo "Warning: ROCm mode selected. Ensure host ROCm drivers and a ROCm-compatible TensorFlow build are installed."
-fi
-
 echo "Starting container ${HTE_REMOTE_CONTAINER_NAME} ..."
 "${SSH_CMD[@]}" "docker run -d --name '$HTE_REMOTE_CONTAINER_NAME' --restart unless-stopped \
   --label '${STACK_LABEL_KEY}=${STACK_LABEL_VALUE}' \
   ${GPU_DOCKER_FLAGS} \
+  ${ROCM_RUNTIME_ENV_FLAGS} \
   -p '${HTE_REMOTE_MCP_PORT}:${FASTMCP_PORT}' \
   -e 'HTE_MCP_TRANSPORT=${HTE_MCP_TRANSPORT}' \
   -e 'HTE_GPU_MODE=${RESOLVED_GPU_MODE}' \
+  -e 'HTE_TENSORFLOW_DISTRIBUTION=${RESOLVED_TENSORFLOW_DISTRIBUTION}' \
   -e 'HTE_HOST_GPU_VENDOR_HINT=${GPU_VENDOR_HINT}' \
   -e 'FASTMCP_HOST=${FASTMCP_HOST}' \
   -e 'FASTMCP_PORT=${FASTMCP_PORT}' \

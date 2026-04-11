@@ -1,0 +1,235 @@
+{
+  "targets": [
+    "h2_co_ratio",
+    "methane_slip_pct",
+    "methanol_selectivity_pct",
+    "ftir_methoxy_ratio",
+    "urea_yield_pct",
+    "ftir_urea_carbonyl_ratio",
+    "nitrate_mg_l",
+    "permeate_conductivity_uScm"
+  ],
+  "test_mae": {
+    "h2_co_ratio": 0.05229828506708145,
+    "methane_slip_pct": 0.5058722496032715,
+    "methanol_selectivity_pct": 2.2248473167419434,
+    "ftir_methoxy_ratio": 0.023976612836122513,
+    "urea_yield_pct": 1.528105616569519,
+    "ftir_urea_carbonyl_ratio": 0.02017703838646412,
+    "nitrate_mg_l": 0.2407522350549698,
+    "permeate_conductivity_uScm": 8.118931770324707
+  },
+  "test_rmse": {
+    "h2_co_ratio": 0.0794481635093689,
+    "methane_slip_pct": 0.7038544416427612,
+    "methanol_selectivity_pct": 2.6410908699035645,
+    "ftir_methoxy_ratio": 0.034412484616041183,
+    "urea_yield_pct": 1.9701992273330688,
+    "ftir_urea_carbonyl_ratio": 0.026004258543252945,
+    "nitrate_mg_l": 0.3564462661743164,
+    "permeate_conductivity_uScm": 10.473188400268555
+  },
+  "mean_test_mae": 1.5893701314926147,
+  "mean_test_rmse": 2.0355803966522217,
+  "backend": {
+    "requested_device": "/GPU:0",
+    "resolved_device": "/GPU:0",
+    "version": "2.16.2",
+    "notes": [
+      "TensorFlow XLA JIT is disabled for training stability.",
+      "Training skips pre-flight GPU inventory; device health is determined by training attempt."
+    ],
+    "runtime_signature": {
+      "platform": "Darwin",
+      "machine": "arm64",
+      "tensorflow_version": "2.16.2"
+    }
+  },
+  "training": {
+    "lookback_steps": 6,
+    "max_epochs": 2,
+    "batch_size": 8,
+    "epochs_completed": 2,
+    "determinism_enabled": true
+  },
+  "convergence": {
+    "status": "ok",
+    "attempts": [
+      {
+        "device": "/GPU:0",
+        "epochs_completed": 2,
+        "history_non_finite": false,
+        "prediction_non_finite": false
+      }
+    ],
+    "cpu_fallback_used": false
+  },
+  "drift": {
+    "columns": [
+      "shipping_risk_index",
+      "insurance_spread_index",
+      "grid_stability_index",
+      "inspection_access_index",
+      "feed_gas_index",
+      "chloride_load_index"
+    ],
+    "max_abs_zscore": 13.517234572962561,
+    "mean_abs_zscore": 7.085109351741235,
+    "out_of_bounds_fraction": 1.0,
+    "details": {
+      "shipping_risk_index": {
+        "value": 0.4617232369360078,
+        "train_mean": 0.18474528193473816,
+        "train_std": 0.07366587221622467,
+        "abs_zscore": 3.759922290586361,
+        "train_min": 0.06,
+        "train_max": 0.3121247450074722,
+        "out_of_bounds": true
+      },
+      "insurance_spread_index": {
+        "value": 0.4761742213053452,
+        "train_mean": 0.27465641498565674,
+        "train_std": 0.06341519951820374,
+        "abs_zscore": 3.177752460777822,
+        "train_min": 0.1449180309826072,
+        "train_max": 0.3555420529125324,
+        "out_of_bounds": true
+      },
+      "grid_stability_index": {
+        "value": 0.6831449715078369,
+        "train_mean": 0.9065737128257751,
+        "train_std": 0.01895451545715332,
+        "abs_zscore": 11.787626110675257,
+        "train_min": 0.8692048828903435,
+        "train_max": 0.9479910524258268,
+        "out_of_bounds": true
+      },
+      "inspection_access_index": {
+        "value": 0.7387139239107358,
+        "train_mean": 0.9513617157936096,
+        "train_std": 0.015731604769825935,
+        "abs_zscore": 13.517234572962561,
+        "train_min": 0.914184063158018,
+        "train_max": 0.987323085059684,
+        "out_of_bounds": true
+      },
+      "feed_gas_index": {
+        "value": 0.801500024078588,
+        "train_mean": 0.8966244459152222,
+        "train_std": 0.023180818185210228,
+        "abs_zscore": 4.103583448893328,
+        "train_min": 0.8389303674115759,
+        "train_max": 0.9398409638012624,
+        "out_of_bounds": true
+      },
+      "chloride_load_index": {
+        "value": 0.406874004679902,
+        "train_mean": 0.31607785820961,
+        "train_std": 0.014728785492479801,
+        "abs_zscore": 6.164537226552083,
+        "train_min": 0.2733738023481272,
+        "train_max": 0.3447386635909968,
+        "out_of_bounds": true
+      }
+    }
+  },
+  "normalization": {
+    "feature_columns": [
+      "shipping_risk_index",
+      "insurance_spread_index",
+      "grid_stability_index",
+      "inspection_access_index",
+      "feed_gas_index",
+      "chloride_load_index",
+      "steam_to_carbon_ratio",
+      "reformer_temperature_c",
+      "synthesis_pressure_bar",
+      "recycle_ratio",
+      "ro_recovery_ratio",
+      "h2_co_ratio",
+      "methane_slip_pct",
+      "methanol_selectivity_pct",
+      "ftir_methoxy_ratio",
+      "urea_yield_pct",
+      "ftir_urea_carbonyl_ratio",
+      "nitrate_mg_l",
+      "permeate_conductivity_uScm"
+    ],
+    "target_columns": [
+      "h2_co_ratio",
+      "methane_slip_pct",
+      "methanol_selectivity_pct",
+      "ftir_methoxy_ratio",
+      "urea_yield_pct",
+      "ftir_urea_carbonyl_ratio",
+      "nitrate_mg_l",
+      "permeate_conductivity_uScm"
+    ],
+    "feature_mean": [
+      0.18474528193473816,
+      0.27465641498565674,
+      0.9065737128257751,
+      0.9513617157936096,
+      0.8966244459152222,
+      0.31607785820961,
+      2.833049774169922,
+      790.1195678710938,
+      47.44435119628906,
+      0.7910714745521545,
+      0.46490225195884705,
+      2.3558812141418457,
+      4.548606872558594,
+      80.19717407226562,
+      1.323053002357483,
+      85.41839599609375,
+      1.2668453454971313,
+      4.172408580780029,
+      215.4114990234375
+    ],
+    "feature_std": [
+      0.07366587221622467,
+      0.06341519951820374,
+      0.01895451545715332,
+      0.015731604769825935,
+      0.023180818185210228,
+      0.014728785492479801,
+      0.07393718510866165,
+      7.31057596206665,
+      1.515643835067749,
+      0.02143620327115059,
+      0.0054495856165885925,
+      0.05979088321328163,
+      0.5534720420837402,
+      2.7074203491210938,
+      0.03471554443240166,
+      2.717696189880371,
+      0.031309183686971664,
+      0.3495408594608307,
+      11.275167465209961
+    ],
+    "target_mean": [
+      2.360612630844116,
+      4.494523525238037,
+      80.0776138305664,
+      1.321623682975769,
+      85.170166015625,
+      1.264325737953186,
+      4.148431777954102,
+      213.65414428710938
+    ],
+    "target_std": [
+      0.05577369034290314,
+      0.5094282031059265,
+      2.5093512535095215,
+      0.03262602537870407,
+      2.6377711296081543,
+      0.029913734644651413,
+      0.10960943251848221,
+      4.7153167724609375
+    ]
+  },
+  "figures": {
+    "training_history_figure": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/training_history_lb6_hz1_u32-24-16.png",
+    "holdout_forecast_figure": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/holdout_forecast_lb6_hz1_u32-24-16.png"
+  }
+}

@@ -15,13 +15,13 @@
       "carbon_balance_pct": "Report inlet vs outlet carbon closure."
     },
     "expected_outputs": {
-      "expected_h2_co_ratio": 1.9278877973556519,
-      "expected_methane_slip_pct": 9.04117488861084,
+      "expected_h2_co_ratio": 1.9287433624267578,
+      "expected_methane_slip_pct": 8.689939498901367,
       "expected_output_type": "Chromatogram peak areas for H2, CO, CH4, CO2 and derived ratio/slip values."
     },
     "acceptance_criteria": {
-      "h2_co_ratio": "Accept if measured H2/CO is within +/- 0.056 of the forecast.",
-      "methane_slip_pct": "Accept if methane slip is within +/- 0.488 percentage points."
+      "h2_co_ratio": "Accept if measured H2/CO is within +/- 0.052 of the forecast.",
+      "methane_slip_pct": "Accept if methane slip is within +/- 0.506 percentage points."
     },
     "source_alignment": [
       "xu_froment_1989",
@@ -44,13 +44,13 @@
       "condensate_mass_balance_pct": "Report condensate yield relative to carbon feed."
     },
     "expected_outputs": {
-      "expected_methanol_selectivity_pct": 72.54015350341797,
-      "expected_ftir_methoxy_ratio": 1.232958436012268,
+      "expected_methanol_selectivity_pct": 71.6143798828125,
+      "expected_ftir_methoxy_ratio": 1.1980314254760742,
       "expected_output_type": "GC peak areas and ATR-FTIR methoxy-band ratios."
     },
     "acceptance_criteria": {
-      "methanol_selectivity_pct": "Accept if selectivity is within +/- 3.522 percentage points.",
-      "ftir_methoxy_ratio": "Accept if the 1030/1380 ratio is within +/- 0.054."
+      "methanol_selectivity_pct": "Accept if selectivity is within +/- 2.225 percentage points.",
+      "ftir_methoxy_ratio": "Accept if the 1030/1380 ratio is within +/- 0.024."
     },
     "source_alignment": [
       "vanden_bussche_froment_1996",
@@ -73,14 +73,14 @@
       "ic_nitrate_mg_l": "Measure nitrate in the hydrolysis liquor by ion chromatography."
     },
     "expected_outputs": {
-      "expected_urea_yield_pct": 80.44111633300781,
-      "expected_ftir_urea_carbonyl_ratio": 1.198824167251587,
-      "expected_nitrate_mg_l": 5.683182716369629,
+      "expected_urea_yield_pct": 75.53406524658203,
+      "expected_ftir_urea_carbonyl_ratio": 1.169019341468811,
+      "expected_nitrate_mg_l": 5.738588809967041,
       "expected_output_type": "Isolated yield %, ATR-FTIR band ratio, ion chromatogram nitrate concentration."
     },
     "acceptance_criteria": {
-      "urea_yield_pct": "Accept if isolated yield is within +/- 3.474 percentage points.",
-      "nitrate_mg_l": "Accept if nitrate is within +/- 0.253 mg/L."
+      "urea_yield_pct": "Accept if isolated yield is within +/- 1.528 percentage points.",
+      "nitrate_mg_l": "Accept if nitrate is within +/- 0.241 mg/L."
     },
     "source_alignment": [
       "iaea_gov_2025_50",
@@ -103,13 +103,13 @@
       "flux_decline_pct": "Report normalized water flux decline over the run."
     },
     "expected_outputs": {
-      "expected_permeate_conductivity_uScm": 248.79254150390625,
-      "expected_nitrate_mg_l": 5.683182716369629,
+      "expected_permeate_conductivity_uScm": 253.79891967773438,
+      "expected_nitrate_mg_l": 5.738588809967041,
       "expected_output_type": "Conductivity trace, ion chromatogram nitrate peak, normalized flux decline."
     },
     "acceptance_criteria": {
-      "permeate_conductivity_uScm": "Accept if conductivity is within +/- 8.939 uS/cm.",
-      "nitrate_mg_l": "Accept if nitrate is within +/- 0.253 mg/L."
+      "permeate_conductivity_uScm": "Accept if conductivity is within +/- 8.119 uS/cm.",
+      "nitrate_mg_l": "Accept if nitrate is within +/- 0.241 mg/L."
     },
     "source_alignment": [
       "elimelech_phillip_2011",

@@ -1,0 +1,1153 @@
+{
+  "run_started_utc": "2026-04-11T02:50:14.513967Z",
+  "backend_status": {
+    "ok": true,
+    "tool": "backend_status",
+    "request_id": "c6d17184666343b883e07037275c5c2b",
+    "duration_ms": 1509.6025000093505,
+    "data": {
+      "available": true,
+      "version": "2.16.2",
+      "requested_preference": "gpu",
+      "resolved_device": "/GPU:0",
+      "physical_devices": [
+        "CPU:/physical_device:CPU:0",
+        "GPU:/physical_device:GPU:0"
+      ],
+      "visible_devices": [
+        "CPU:/physical_device:CPU:0",
+        "GPU:/physical_device:GPU:0"
+      ],
+      "metal_devices": [
+        "/physical_device:GPU:0"
+      ],
+      "probe_operation": "matmul(2x2)",
+      "probe_success": true,
+      "notes": [
+        "TensorFlow GPU probe succeeded"
+      ],
+      "built_with_cuda": false,
+      "accelerator_context": {
+        "platform": "Darwin",
+        "machine": "arm64",
+        "is_container": false,
+        "gpu_pci_devices": [],
+        "gpu_vendors": [],
+        "nvidia_smi_available": false,
+        "nvidia_device_nodes": [],
+        "rocm_device_nodes_available": false,
+        "rocm_tools_available": false,
+        "cuda_visible_devices": "",
+        "host_gpu_vendor_hint": "",
+        "tensorflow_distribution": "",
+        "tensorflow_built_with_cuda": false
+      }
+    }
+  },
+  "alignment_manifest": {
+    "ok": true,
+    "tool": "alignment_manifest",
+    "request_id": "f99bc7d9676149d8bfe2530b2cc9ffed",
+    "duration_ms": 0.30037498800083995,
+    "data": {
+      "profile_id": "hte-2026-04-alignment-v1",
+      "generated_on": "2026-04-11",
+      "sources": [
+        {
+          "source_id": "iaea_gov_2026_8",
+          "title": "NPT Safeguards Agreement with the Islamic Republic of Iran",
+          "document_number": "GOV/2026/8",
+          "url": "https://www.iaea.org/sites/default/files/gov2026-8.pdf",
+          "accessed_on": "2026-04-11",
+          "usage": "Upper bound on safeguards access continuity and inspection observability."
+        },
+        {
+          "source_id": "iaea_gov_2025_50",
+          "title": "Verification and Monitoring in the Islamic Republic of Iran in light of United Nations Security Council resolution 2231 (2015)",
+          "document_number": "GOV/2025/50",
+          "url": "https://www.iaea.org/sites/default/files/documents/gov2025-50.pdf",
+          "accessed_on": "2026-04-11",
+          "usage": "Reference trajectory for the observability and monitoring channel."
+        },
+        {
+          "source_id": "iaea_statement_2026_03_02",
+          "title": "IAEA Director General's Introductory Statement to the Board of Governors",
+          "url": "https://www.iaea.org/newscenter/statements/iaea-director-generals-introductory-statement-to-the-board-of-governors-2-march-2026",
+          "accessed_on": "2026-04-11",
+          "usage": "Event chronology and no-radiological-release boundary condition."
+        },
+        {
+          "source_id": "unctad_hormuz_2026_03_10",
+          "title": "Strait of Hormuz Disruptions: Implications for Global Trade and Development",
+          "url": "https://unctad.org/system/files/press-material/ma26003_strait-of-hormuz-disruptions_en.pdf",
+          "accessed_on": "2026-04-11",
+          "usage": "Shipping, fertilizer, and tanker-exposure alignment for the macro forcing envelope."
+        },
+        {
+          "source_id": "abc_politics_2026_130629024",
+          "title": "Trump says new call for regime change in Iran justified by 'imminent' threat",
+          "url": "https://abcnews.go.com/Politics/trump-new-call-regime-change-iran-justified-imminent/story?id=130629024",
+          "accessed_on": "2026-04-11",
+          "usage": "Public escalation chronology used only as a dated exogenous event marker."
+        },
+        {
+          "source_id": "cen_chemical_sector_2026",
+          "title": "Iran war hits the chemical sector",
+          "url": "https://cen.acs.org/business/petrochemicals/Iran-war-hits-chemical-sector/104/web/2026/03",
+          "accessed_on": "2026-04-11",
+          "usage": "Process outage alignment for hydrocarbon and fertilizer conversion envelopes."
+        },
+        {
+          "source_id": "eia_steo_2026_04_07",
+          "title": "Short-Term Energy Outlook: Global Oil Markets",
+          "url": "https://www.eia.gov/outlooks/steo/report/global_oil.php",
+          "accessed_on": "2026-04-11",
+          "usage": "Oil-market and chokepoint stress calibration."
+        },
+        {
+          "source_id": "xu_froment_1989",
+          "title": "Methane Steam Reforming, Methanation and Water-Gas Shift: I. Intrinsic Kinetics",
+          "journal": "AIChE Journal",
+          "year": 1989,
+          "doi": "10.1002/aic.690350109",
+          "usage": "Steam-reforming and shift kinetics for the hydrocarbon branch."
+        },
+        {
+          "source_id": "vanden_bussche_froment_1996",
+          "title": "A Steady-State Kinetic Model for Methanol Synthesis and the Water Gas Shift Reaction on a Commercial Cu/ZnO/Al2O3 Catalyst",
+          "journal": "Journal of Catalysis",
+          "year": 1996,
+          "doi": "10.1006/jcat.1996.0156",
+          "usage": "Methanol synthesis kinetics and selectivity constraints."
+        },
+        {
+          "source_id": "elimelech_phillip_2011",
+          "title": "The Future of Seawater Desalination: Energy, Technology, and the Environment",
+          "journal": "Science",
+          "year": 2011,
+          "doi": "10.1126/science.1200488",
+          "usage": "Desalination energy and water-service interpretation."
+        }
+      ],
+      "alignment_map": {
+        "shipping_risk_index": [
+          "unctad_hormuz_2026_03_10",
+          "eia_steo_2026_04_07"
+        ],
+        "inspection_access_index": [
+          "iaea_gov_2025_50",
+          "iaea_gov_2026_8",
+          "iaea_statement_2026_03_02"
+        ],
+        "feed_gas_index": [
+          "cen_chemical_sector_2026",
+          "eia_steo_2026_04_07"
+        ],
+        "steam_reforming_experiment": [
+          "xu_froment_1989",
+          "cen_chemical_sector_2026"
+        ],
+        "methanol_synthesis_experiment": [
+          "vanden_bussche_froment_1996",
+          "unctad_hormuz_2026_03_10"
+        ],
+        "desalination_experiment": [
+          "elimelech_phillip_2011",
+          "unctad_hormuz_2026_03_10"
+        ]
+      }
+    }
+  },
+  "record_operational_evidence": {
+    "ok": true,
+    "tool": "record_operational_evidence",
+    "request_id": "73b110b0995c46f889358373f0880b6e",
+    "duration_ms": 1.0693340009311214,
+    "data": {
+      "record_id": "f6e75cda8ca148a6b0e90021fc97c283",
+      "evidence_count": 7,
+      "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/evidence/20260411T025016026730Z_f6e75cda8ca148a6b0e90021fc97c283.json",
+      "schema": "hte.operational_evidence.v1",
+      "required_source_field": "source_url",
+      "note": "Evidence was stored as a durable JSON record. Include this path or the published artifact URL in downstream briefings."
+    },
+    "artifacts": {
+      "enabled": true,
+      "run_id": "20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e",
+      "storage_root": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e",
+      "request_record": {
+        "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/request_response.json",
+        "public_path": "/mcp/artifacts/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/request_response.json",
+        "url": "/mcp/artifacts/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/request_response.json"
+      },
+      "artifact_index": {
+        "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/artifact_index.json",
+        "public_path": "/mcp/artifacts/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/artifact_index.json",
+        "url": "/mcp/artifacts/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/artifact_index.json"
+      },
+      "files": [
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/evidence/20260411T025016026730Z_f6e75cda8ca148a6b0e90021fc97c283.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/results/evidence/20260411T025016026730Z_f6e75cda8ca148a6b0e90021fc97c283.json",
+          "public_path": "/mcp/artifacts/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/results/evidence/20260411T025016026730Z_f6e75cda8ca148a6b0e90021fc97c283.json",
+          "url": "/mcp/artifacts/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/results/evidence/20260411T025016026730Z_f6e75cda8ca148a6b0e90021fc97c283.json"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/data/aligned_hormuz_benchmark.csv",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/data/aligned_hormuz_benchmark.csv",
+          "public_path": "/mcp/artifacts/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/data/aligned_hormuz_benchmark.csv",
+          "url": "/mcp/artifacts/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/data/aligned_hormuz_benchmark.csv"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/data/source_manifest.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/data/source_manifest.json",
+          "public_path": "/mcp/artifacts/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/data/source_manifest.json",
+          "url": "/mcp/artifacts/20260411T025016Z_record_operational_evidence_73b110b0995c46f889358373f0880b6e/data/source_manifest.json"
+        }
+      ]
+    }
+  },
+  "train_model": {
+    "ok": true,
+    "tool": "train_model",
+    "request_id": "4662a8f2bfad4124b24faf33c7f84261",
+    "duration_ms": 28980.545958009316,
+    "data": {
+      "targets": [
+        "h2_co_ratio",
+        "methane_slip_pct",
+        "methanol_selectivity_pct",
+        "ftir_methoxy_ratio",
+        "urea_yield_pct",
+        "ftir_urea_carbonyl_ratio",
+        "nitrate_mg_l",
+        "permeate_conductivity_uScm"
+      ],
+      "test_mae": {
+        "h2_co_ratio": 0.14518097043037415,
+        "methane_slip_pct": 1.2662440538406372,
+        "methanol_selectivity_pct": 3.8872904777526855,
+        "ftir_methoxy_ratio": 0.05851369351148605,
+        "urea_yield_pct": 4.232742786407471,
+        "ftir_urea_carbonyl_ratio": 0.048820316791534424,
+        "nitrate_mg_l": 0.4473460614681244,
+        "permeate_conductivity_uScm": 15.972115516662598
+      },
+      "test_rmse": {
+        "h2_co_ratio": 0.23200012743473053,
+        "methane_slip_pct": 2.141557455062866,
+        "methanol_selectivity_pct": 5.680625915527344,
+        "ftir_methoxy_ratio": 0.08542845398187637,
+        "urea_yield_pct": 5.385998249053955,
+        "ftir_urea_carbonyl_ratio": 0.06205061823129654,
+        "nitrate_mg_l": 0.7347057461738586,
+        "permeate_conductivity_uScm": 25.00401496887207
+      },
+      "mean_test_mae": 3.25728178024292,
+      "mean_test_rmse": 4.915797710418701,
+      "backend": {
+        "resolved_device": "/GPU:0",
+        "version": "2.16.2",
+        "notes": [
+          "TensorFlow GPU probe succeeded"
+        ]
+      },
+      "training": {
+        "lookback_steps": 12,
+        "max_epochs": 48,
+        "batch_size": 16,
+        "epochs_completed": 11
+      },
+      "normalization": {
+        "feature_columns": [
+          "shipping_risk_index",
+          "insurance_spread_index",
+          "grid_stability_index",
+          "inspection_access_index",
+          "feed_gas_index",
+          "chloride_load_index",
+          "steam_to_carbon_ratio",
+          "reformer_temperature_c",
+          "synthesis_pressure_bar",
+          "recycle_ratio",
+          "ro_recovery_ratio",
+          "h2_co_ratio",
+          "methane_slip_pct",
+          "methanol_selectivity_pct",
+          "ftir_methoxy_ratio",
+          "urea_yield_pct",
+          "ftir_urea_carbonyl_ratio",
+          "nitrate_mg_l",
+          "permeate_conductivity_uScm"
+        ],
+        "target_columns": [
+          "h2_co_ratio",
+          "methane_slip_pct",
+          "methanol_selectivity_pct",
+          "ftir_methoxy_ratio",
+          "urea_yield_pct",
+          "ftir_urea_carbonyl_ratio",
+          "nitrate_mg_l",
+          "permeate_conductivity_uScm"
+        ],
+        "feature_mean": [
+          0.18376509845256805,
+          0.2730078101158142,
+          0.9067125916481018,
+          0.9514798521995544,
+          0.8968742489814758,
+          0.3163343071937561,
+          2.830733299255371,
+          790.1348876953125,
+          47.39308166503906,
+          0.7911297082901001,
+          0.4646414518356323,
+          2.3558599948883057,
+          4.547820568084717,
+          80.18125915527344,
+          1.3231130838394165,
+          85.36500549316406,
+          1.2661882638931274,
+          4.16198205947876,
+          214.60198974609375
+        ],
+        "feature_std": [
+          0.07455646991729736,
+          0.06435426324605942,
+          0.019211331382393837,
+          0.01573864556849003,
+          0.023309744894504547,
+          0.014450574293732643,
+          0.07388533651828766,
+          7.243586540222168,
+          1.514577031135559,
+          0.02151445858180523,
+          0.00533630745485425,
+          0.05737513303756714,
+          0.527330756187439,
+          2.6036598682403564,
+          0.03339377045631409,
+          2.652963638305664,
+          0.030323537066578865,
+          0.2677793502807617,
+          8.851313591003418
+        ],
+        "target_mean": [
+          2.364130973815918,
+          4.481226921081543,
+          80.21143341064453,
+          1.3229392766952515,
+          85.3290023803711,
+          1.266348123550415,
+          4.148722171783447,
+          213.7604217529297
+        ],
+        "target_std": [
+          0.05491778999567032,
+          0.503286600112915,
+          2.5017926692962646,
+          0.0324765145778656,
+          2.6180484294891357,
+          0.02969025820493698,
+          0.10628833621740341,
+          4.097634792327881
+        ]
+      },
+      "figures": {
+        "training_history_figure": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/training_history_lb12_hz1_u128-96-64.png",
+        "holdout_forecast_figure": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png"
+      }
+    },
+    "artifacts": {
+      "enabled": true,
+      "run_id": "20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261",
+      "storage_root": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261",
+      "request_record": {
+        "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/request_response.json",
+        "public_path": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/request_response.json",
+        "url": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/request_response.json"
+      },
+      "artifact_index": {
+        "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/artifact_index.json",
+        "public_path": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/artifact_index.json",
+        "url": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/artifact_index.json"
+      },
+      "files": [
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png",
+          "public_path": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png",
+          "url": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/training_history_lb12_hz1_u128-96-64.png",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/results/figures/training_history_lb12_hz1_u128-96-64.png",
+          "public_path": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/results/figures/training_history_lb12_hz1_u128-96-64.png",
+          "url": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/results/figures/training_history_lb12_hz1_u128-96-64.png"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/data/aligned_hormuz_benchmark.csv",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/data/aligned_hormuz_benchmark.csv",
+          "public_path": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/data/aligned_hormuz_benchmark.csv",
+          "url": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/data/aligned_hormuz_benchmark.csv"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/data/source_manifest.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/data/source_manifest.json",
+          "public_path": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/data/source_manifest.json",
+          "url": "/mcp/artifacts/20260411T025045Z_train_model_4662a8f2bfad4124b24faf33c7f84261/data/source_manifest.json"
+        }
+      ]
+    }
+  },
+  "forecast_observables": {
+    "ok": true,
+    "tool": "forecast_observables",
+    "request_id": "87add252384f4f73846707f014f86cf2",
+    "duration_ms": 693.979625008069,
+    "data": {
+      "steps": 6,
+      "resolved_device": "/GPU:0",
+      "forecast": [
+        {
+          "timestamp": "forecast_step_1",
+          "h2_co_ratio": 2.4372146129608154,
+          "methane_slip_pct": 3.9929370880126953,
+          "methanol_selectivity_pct": 83.29100036621094,
+          "ftir_methoxy_ratio": 1.386074185371399,
+          "urea_yield_pct": 87.83854675292969,
+          "ftir_urea_carbonyl_ratio": 1.295000672340393,
+          "nitrate_mg_l": 4.1028008460998535,
+          "permeate_conductivity_uScm": 209.1869354248047
+        },
+        {
+          "timestamp": "forecast_step_2",
+          "h2_co_ratio": 2.4223947525024414,
+          "methane_slip_pct": 4.079061508178711,
+          "methanol_selectivity_pct": 82.95038604736328,
+          "ftir_methoxy_ratio": 1.3800179958343506,
+          "urea_yield_pct": 87.36467742919922,
+          "ftir_urea_carbonyl_ratio": 1.289899230003357,
+          "nitrate_mg_l": 4.076970100402832,
+          "permeate_conductivity_uScm": 209.72731018066406
+        },
+        {
+          "timestamp": "forecast_step_3",
+          "h2_co_ratio": 2.400662899017334,
+          "methane_slip_pct": 4.183533668518066,
+          "methanol_selectivity_pct": 82.30445098876953,
+          "ftir_methoxy_ratio": 1.3686984777450562,
+          "urea_yield_pct": 86.47102355957031,
+          "ftir_urea_carbonyl_ratio": 1.28141450881958,
+          "nitrate_mg_l": 4.051907062530518,
+          "permeate_conductivity_uScm": 211.22093200683594
+        },
+        {
+          "timestamp": "forecast_step_4",
+          "h2_co_ratio": 2.4008913040161133,
+          "methane_slip_pct": 4.193730354309082,
+          "methanol_selectivity_pct": 81.03547668457031,
+          "ftir_methoxy_ratio": 1.352686882019043,
+          "urea_yield_pct": 85.19058990478516,
+          "ftir_urea_carbonyl_ratio": 1.2740908861160278,
+          "nitrate_mg_l": 4.065735340118408,
+          "permeate_conductivity_uScm": 212.32449340820312
+        },
+        {
+          "timestamp": "forecast_step_5",
+          "h2_co_ratio": 2.393127918243408,
+          "methane_slip_pct": 4.294963836669922,
+          "methanol_selectivity_pct": 80.07605743408203,
+          "ftir_methoxy_ratio": 1.3412394523620605,
+          "urea_yield_pct": 84.61080169677734,
+          "ftir_urea_carbonyl_ratio": 1.2663322687149048,
+          "nitrate_mg_l": 4.081372261047363,
+          "permeate_conductivity_uScm": 212.24526977539062
+        },
+        {
+          "timestamp": "forecast_step_6",
+          "h2_co_ratio": 2.3863887786865234,
+          "methane_slip_pct": 4.37162971496582,
+          "methanol_selectivity_pct": 80.0170669555664,
+          "ftir_methoxy_ratio": 1.3416297435760498,
+          "urea_yield_pct": 84.70086669921875,
+          "ftir_urea_carbonyl_ratio": 1.2640737295150757,
+          "nitrate_mg_l": 4.083368301391602,
+          "permeate_conductivity_uScm": 211.5932159423828
+        }
+      ],
+      "driver_policy": "persistence plus linear slope clipping within observed bounds",
+      "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/horizon_forecast_lb12_hz1_u128-96-64.json"
+    },
+    "artifacts": {
+      "enabled": true,
+      "run_id": "20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2",
+      "storage_root": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2",
+      "request_record": {
+        "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/request_response.json",
+        "public_path": "/mcp/artifacts/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/request_response.json",
+        "url": "/mcp/artifacts/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/request_response.json"
+      },
+      "artifact_index": {
+        "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/artifact_index.json",
+        "public_path": "/mcp/artifacts/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/artifact_index.json",
+        "url": "/mcp/artifacts/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/artifact_index.json"
+      },
+      "files": [
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/horizon_forecast_lb12_hz1_u128-96-64.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/results/horizon_forecast_lb12_hz1_u128-96-64.json",
+          "public_path": "/mcp/artifacts/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/results/horizon_forecast_lb12_hz1_u128-96-64.json",
+          "url": "/mcp/artifacts/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/results/horizon_forecast_lb12_hz1_u128-96-64.json"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/data/aligned_hormuz_benchmark.csv",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/data/aligned_hormuz_benchmark.csv",
+          "public_path": "/mcp/artifacts/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/data/aligned_hormuz_benchmark.csv",
+          "url": "/mcp/artifacts/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/data/aligned_hormuz_benchmark.csv"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/data/source_manifest.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/data/source_manifest.json",
+          "public_path": "/mcp/artifacts/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/data/source_manifest.json",
+          "url": "/mcp/artifacts/20260411T025045Z_forecast_observables_87add252384f4f73846707f014f86cf2/data/source_manifest.json"
+        }
+      ]
+    }
+  },
+  "optimize_schedule": {
+    "ok": true,
+    "tool": "optimize_schedule",
+    "request_id": "9edc4688eeef45eebe5139a7d12db169",
+    "duration_ms": 62254.43975000235,
+    "data": {
+      "baseline_schedule": [
+        {
+          "steam_to_carbon_ratio": 2.728429079055786,
+          "reformer_temperature_c": 763.5921630859375,
+          "synthesis_pressure_bar": 44.99188995361328,
+          "recycle_ratio": 0.7235275506973267,
+          "ro_recovery_ratio": 0.40566369891166687
+        },
+        {
+          "steam_to_carbon_ratio": 2.7103638648986816,
+          "reformer_temperature_c": 763.5921630859375,
+          "synthesis_pressure_bar": 44.65514373779297,
+          "recycle_ratio": 0.7235275506973267,
+          "ro_recovery_ratio": 0.40566369891166687
+        },
+        {
+          "steam_to_carbon_ratio": 2.693108081817627,
+          "reformer_temperature_c": 763.5921630859375,
+          "synthesis_pressure_bar": 44.318397521972656,
+          "recycle_ratio": 0.7235275506973267,
+          "ro_recovery_ratio": 0.40566369891166687
+        },
+        {
+          "steam_to_carbon_ratio": 2.693108081817627,
+          "reformer_temperature_c": 763.5921630859375,
+          "synthesis_pressure_bar": 44.13585662841797,
+          "recycle_ratio": 0.7235275506973267,
+          "ro_recovery_ratio": 0.40566369891166687
+        },
+        {
+          "steam_to_carbon_ratio": 2.693108081817627,
+          "reformer_temperature_c": 763.5921630859375,
+          "synthesis_pressure_bar": 44.13585662841797,
+          "recycle_ratio": 0.7235275506973267,
+          "ro_recovery_ratio": 0.40566369891166687
+        },
+        {
+          "steam_to_carbon_ratio": 2.693108081817627,
+          "reformer_temperature_c": 763.5921630859375,
+          "synthesis_pressure_bar": 44.13585662841797,
+          "recycle_ratio": 0.7235275506973267,
+          "ro_recovery_ratio": 0.40566369891166687
+        }
+      ],
+      "optimized_schedule": [
+        {
+          "steam_to_carbon_ratio": 3.0343306064605713,
+          "reformer_temperature_c": 763.5928955078125,
+          "synthesis_pressure_bar": 44.78215408325195,
+          "recycle_ratio": 0.7235308289527893,
+          "ro_recovery_ratio": 0.4787757992744446
+        },
+        {
+          "steam_to_carbon_ratio": 3.0190415382385254,
+          "reformer_temperature_c": 763.5932006835938,
+          "synthesis_pressure_bar": 44.65589141845703,
+          "recycle_ratio": 0.723532497882843,
+          "ro_recovery_ratio": 0.47874337434768677
+        },
+        {
+          "steam_to_carbon_ratio": 2.7996528148651123,
+          "reformer_temperature_c": 763.5936889648438,
+          "synthesis_pressure_bar": 44.487525939941406,
+          "recycle_ratio": 0.7235347628593445,
+          "ro_recovery_ratio": 0.47838810086250305
+        },
+        {
+          "steam_to_carbon_ratio": 2.6931729316711426,
+          "reformer_temperature_c": 763.59423828125,
+          "synthesis_pressure_bar": 44.34024429321289,
+          "recycle_ratio": 0.7235369682312012,
+          "ro_recovery_ratio": 0.46383145451545715
+        },
+        {
+          "steam_to_carbon_ratio": 2.693147897720337,
+          "reformer_temperature_c": 763.5946655273438,
+          "synthesis_pressure_bar": 44.235313415527344,
+          "recycle_ratio": 0.7235382199287415,
+          "ro_recovery_ratio": 0.4056839942932129
+        },
+        {
+          "steam_to_carbon_ratio": 2.693142890930176,
+          "reformer_temperature_c": 763.5948486328125,
+          "synthesis_pressure_bar": 44.14820098876953,
+          "recycle_ratio": 0.7235385775566101,
+          "ro_recovery_ratio": 0.40567120909690857
+        }
+      ],
+      "baseline_predictions": [
+        {
+          "h2_co_ratio": 2.4372146129608154,
+          "methane_slip_pct": 3.9929370880126953,
+          "methanol_selectivity_pct": 83.29100036621094,
+          "ftir_methoxy_ratio": 1.386074185371399,
+          "urea_yield_pct": 87.83854675292969,
+          "ftir_urea_carbonyl_ratio": 1.295000672340393,
+          "nitrate_mg_l": 4.1028008460998535,
+          "permeate_conductivity_uScm": 209.1869354248047
+        },
+        {
+          "h2_co_ratio": 2.4223947525024414,
+          "methane_slip_pct": 4.079061508178711,
+          "methanol_selectivity_pct": 82.95038604736328,
+          "ftir_methoxy_ratio": 1.3800179958343506,
+          "urea_yield_pct": 87.36467742919922,
+          "ftir_urea_carbonyl_ratio": 1.289899230003357,
+          "nitrate_mg_l": 4.076970100402832,
+          "permeate_conductivity_uScm": 209.72731018066406
+        },
+        {
+          "h2_co_ratio": 2.400662899017334,
+          "methane_slip_pct": 4.183533668518066,
+          "methanol_selectivity_pct": 82.30445098876953,
+          "ftir_methoxy_ratio": 1.3686984777450562,
+          "urea_yield_pct": 86.47102355957031,
+          "ftir_urea_carbonyl_ratio": 1.28141450881958,
+          "nitrate_mg_l": 4.051907062530518,
+          "permeate_conductivity_uScm": 211.22093200683594
+        },
+        {
+          "h2_co_ratio": 2.4008913040161133,
+          "methane_slip_pct": 4.193730354309082,
+          "methanol_selectivity_pct": 81.03547668457031,
+          "ftir_methoxy_ratio": 1.352686882019043,
+          "urea_yield_pct": 85.19058990478516,
+          "ftir_urea_carbonyl_ratio": 1.2740908861160278,
+          "nitrate_mg_l": 4.065735340118408,
+          "permeate_conductivity_uScm": 212.32449340820312
+        },
+        {
+          "h2_co_ratio": 2.393127918243408,
+          "methane_slip_pct": 4.294963836669922,
+          "methanol_selectivity_pct": 80.07605743408203,
+          "ftir_methoxy_ratio": 1.3412394523620605,
+          "urea_yield_pct": 84.61080169677734,
+          "ftir_urea_carbonyl_ratio": 1.2663322687149048,
+          "nitrate_mg_l": 4.081372261047363,
+          "permeate_conductivity_uScm": 212.24526977539062
+        },
+        {
+          "h2_co_ratio": 2.3863887786865234,
+          "methane_slip_pct": 4.37162971496582,
+          "methanol_selectivity_pct": 80.0170669555664,
+          "ftir_methoxy_ratio": 1.3416297435760498,
+          "urea_yield_pct": 84.70086669921875,
+          "ftir_urea_carbonyl_ratio": 1.2640737295150757,
+          "nitrate_mg_l": 4.083368301391602,
+          "permeate_conductivity_uScm": 211.5932159423828
+        }
+      ],
+      "optimized_predictions": [
+        {
+          "h2_co_ratio": 2.4372146129608154,
+          "methane_slip_pct": 3.9929370880126953,
+          "methanol_selectivity_pct": 83.29100036621094,
+          "ftir_methoxy_ratio": 1.386074185371399,
+          "urea_yield_pct": 87.83854675292969,
+          "ftir_urea_carbonyl_ratio": 1.295000672340393,
+          "nitrate_mg_l": 4.1028008460998535,
+          "permeate_conductivity_uScm": 209.1869354248047
+        },
+        {
+          "h2_co_ratio": 2.4225716590881348,
+          "methane_slip_pct": 4.077840805053711,
+          "methanol_selectivity_pct": 82.9505386352539,
+          "ftir_methoxy_ratio": 1.3800528049468994,
+          "urea_yield_pct": 87.3668212890625,
+          "ftir_urea_carbonyl_ratio": 1.2899457216262817,
+          "nitrate_mg_l": 4.077207565307617,
+          "permeate_conductivity_uScm": 209.71681213378906
+        },
+        {
+          "h2_co_ratio": 2.401362180709839,
+          "methane_slip_pct": 4.177408695220947,
+          "methanol_selectivity_pct": 82.30573272705078,
+          "ftir_methoxy_ratio": 1.368935227394104,
+          "urea_yield_pct": 86.48385620117188,
+          "ftir_urea_carbonyl_ratio": 1.2816438674926758,
+          "nitrate_mg_l": 4.052834987640381,
+          "permeate_conductivity_uScm": 211.16909790039062
+        },
+        {
+          "h2_co_ratio": 2.4023773670196533,
+          "methane_slip_pct": 4.176483154296875,
+          "methanol_selectivity_pct": 81.03099822998047,
+          "ftir_methoxy_ratio": 1.3534878492355347,
+          "urea_yield_pct": 85.21936798095703,
+          "ftir_urea_carbonyl_ratio": 1.2746199369430542,
+          "nitrate_mg_l": 4.067831039428711,
+          "permeate_conductivity_uScm": 212.18218994140625
+        },
+        {
+          "h2_co_ratio": 2.395693063735962,
+          "methane_slip_pct": 4.263695240020752,
+          "methanol_selectivity_pct": 80.07344818115234,
+          "ftir_methoxy_ratio": 1.3428584337234497,
+          "urea_yield_pct": 84.6501693725586,
+          "ftir_urea_carbonyl_ratio": 1.2672103643417358,
+          "nitrate_mg_l": 4.08496618270874,
+          "permeate_conductivity_uScm": 211.9744415283203
+        },
+        {
+          "h2_co_ratio": 2.3913075923919678,
+          "methane_slip_pct": 4.320318698883057,
+          "methanol_selectivity_pct": 80.02466583251953,
+          "ftir_methoxy_ratio": 1.344360589981079,
+          "urea_yield_pct": 84.77230072021484,
+          "ftir_urea_carbonyl_ratio": 1.2655954360961914,
+          "nitrate_mg_l": 4.089951992034912,
+          "permeate_conductivity_uScm": 211.12416076660156
+        }
+      ],
+      "objective_trace": [
+        0.26547643542289734,
+        0.26539286971092224,
+        0.26532551646232605,
+        0.26527321338653564,
+        0.26521968841552734,
+        0.2651873826980591,
+        0.2651583254337311,
+        0.2651411294937134,
+        0.26512405276298523,
+        0.26510584354400635,
+        0.2650831639766693,
+        0.26506516337394714,
+        0.265042245388031,
+        0.26501980423927307,
+        0.2649936079978943,
+        0.26496365666389465,
+        0.26493582129478455,
+        0.26490116119384766,
+        0.26486966013908386,
+        0.2648358643054962,
+        0.2648075819015503,
+        0.2647692859172821,
+        0.26473408937454224,
+        0.26469793915748596,
+        0.264666348695755,
+        0.2646258473396301,
+        0.264582097530365,
+        0.2645425796508789,
+        0.2644995450973511,
+        0.2644527554512024,
+        0.2644115686416626,
+        0.26436635851860046,
+        0.2643209993839264,
+        0.2642737329006195,
+        0.2642247676849365,
+        0.2641780376434326,
+        0.26413360238075256,
+        0.2640858292579651,
+        0.2640347480773926,
+        0.26398801803588867,
+        0.26394185423851013,
+        0.26389625668525696,
+        0.2638549506664276,
+        0.2638101875782013,
+        0.2637675404548645,
+        0.2637249231338501,
+        0.2636881172657013,
+        0.26364752650260925,
+        0.26361265778541565,
+        0.26357200741767883,
+        0.2635408043861389,
+        0.2635017931461334,
+        0.2634739577770233,
+        0.2634401023387909,
+        0.26340776681900024,
+        0.26337870955467224,
+        0.2633490562438965,
+        0.26332443952560425,
+        0.26329341530799866,
+        0.2632693350315094,
+        0.26323890686035156,
+        0.26321542263031006,
+        0.2631875276565552,
+        0.2631552517414093,
+        0.26313191652297974,
+        0.26310044527053833,
+        0.26307034492492676,
+        0.2630397379398346,
+        0.2630029320716858,
+        0.26297527551651,
+        0.26293766498565674,
+        0.26289790868759155,
+        0.2628503143787384,
+        0.2628007233142853,
+        0.26275116205215454,
+        0.26270174980163574,
+        0.26264122128486633,
+        0.26257750391960144,
+        0.2625012993812561,
+        0.26242250204086304,
+        0.26233941316604614,
+        0.2622406482696533,
+        0.262139230966568,
+        0.2620249390602112,
+        0.26189345121383667,
+        0.2617466151714325,
+        0.26157715916633606,
+        0.26139867305755615,
+        0.26119184494018555,
+        0.2609599530696869,
+        0.2607005834579468,
+        0.2604171931743622,
+        0.26009464263916016,
+        0.2597406804561615,
+        0.2593534588813782,
+        0.2589176595211029,
+        0.2584444284439087,
+        0.2579277753829956,
+        0.257363885641098,
+        0.2567567527294159,
+        0.25610676407814026,
+        0.2554125189781189,
+        0.2546764016151428,
+        0.2539081871509552,
+        0.25310999155044556,
+        0.2522931694984436,
+        0.2514539659023285,
+        0.2506074905395508,
+        0.24976718425750732,
+        0.2489272505044937,
+        0.24810491502285004,
+        0.247309610247612,
+        0.24653556942939758,
+        0.24579216539859772,
+        0.2450869381427765,
+        0.24441403150558472,
+        0.24377335608005524,
+        0.24317443370819092,
+        0.24261145293712616,
+        0.24208252131938934,
+        0.24158576130867004,
+        0.24112313985824585,
+        0.2406967133283615,
+        0.24029137194156647,
+        0.23991884291172028,
+        0.23957756161689758,
+        0.23926207423210144,
+        0.23897436261177063,
+        0.23871593177318573,
+        0.2384766787290573,
+        0.23826012015342712,
+        0.23806247115135193,
+        0.23788763582706451,
+        0.23772424459457397,
+        0.23757803440093994,
+        0.23744314908981323,
+        0.23732313513755798,
+        0.23721197247505188,
+        0.23710376024246216,
+        0.2370099276304245,
+        0.23690950870513916,
+        0.23682332038879395,
+        0.23672834038734436,
+        0.2366454303264618,
+        0.2365536093711853,
+        0.23646830022335052,
+        0.23638027906417847,
+        0.2362859696149826,
+        0.23618938028812408,
+        0.23609071969985962,
+        0.2359919548034668,
+        0.23588736355304718,
+        0.2357865422964096,
+        0.23568184673786163,
+        0.2355789989233017,
+        0.23547619581222534,
+        0.23537544906139374,
+        0.23527885973453522,
+        0.23518666625022888,
+        0.23509719967842102
+      ],
+      "summary": {
+        "baseline_mean_methane_slip_pct": 4.185976028442383,
+        "optimized_mean_methane_slip_pct": 4.168113946914673,
+        "baseline_mean_urea_yield_pct": 86.02941767374675,
+        "optimized_mean_urea_yield_pct": 86.05517705281575,
+        "baseline_mean_permeate_conductivity_uScm": 211.04969278971353,
+        "optimized_mean_permeate_conductivity_uScm": 210.89227294921875
+      },
+      "result_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/optimization_summary_lb12_hz1_u128-96-64.json"
+    },
+    "artifacts": {
+      "enabled": true,
+      "run_id": "20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169",
+      "storage_root": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169",
+      "request_record": {
+        "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/request_response.json",
+        "public_path": "/mcp/artifacts/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/request_response.json",
+        "url": "/mcp/artifacts/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/request_response.json"
+      },
+      "artifact_index": {
+        "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/artifact_index.json",
+        "public_path": "/mcp/artifacts/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/artifact_index.json",
+        "url": "/mcp/artifacts/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/artifact_index.json"
+      },
+      "files": [
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/optimization_summary_lb12_hz1_u128-96-64.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/results/optimization_summary_lb12_hz1_u128-96-64.json",
+          "public_path": "/mcp/artifacts/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/results/optimization_summary_lb12_hz1_u128-96-64.json",
+          "url": "/mcp/artifacts/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/results/optimization_summary_lb12_hz1_u128-96-64.json"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/data/aligned_hormuz_benchmark.csv",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/data/aligned_hormuz_benchmark.csv",
+          "public_path": "/mcp/artifacts/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/data/aligned_hormuz_benchmark.csv",
+          "url": "/mcp/artifacts/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/data/aligned_hormuz_benchmark.csv"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/data/source_manifest.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/data/source_manifest.json",
+          "public_path": "/mcp/artifacts/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/data/source_manifest.json",
+          "url": "/mcp/artifacts/20260411T025147Z_optimize_schedule_9edc4688eeef45eebe5139a7d12db169/data/source_manifest.json"
+        }
+      ]
+    }
+  },
+  "validation_protocols": {
+    "ok": true,
+    "tool": "validation_protocols",
+    "request_id": "c3e51b0166a642988510a616f4542a16",
+    "duration_ms": 308.00287499732804,
+    "data": [
+      {
+        "protocol_id": "steam-reforming-gc",
+        "title": "Steam reforming and shift closure under constrained feed-gas margin",
+        "objective": "Verify that the aligned forcing envelope reproduces the forecasted H2/CO ratio and methane slip under fixed-bed Ni/Al2O3 operation.",
+        "setup": {
+          "catalyst": "Ni/Al2O3 fixed bed, 0.50 g",
+          "temperature_c": 780.0,
+          "steam_to_carbon_ratio": 2.85,
+          "gas_hourly_space_velocity_h-1": 12000.0
+        },
+        "measurements": {
+          "gc_tcd_h2_co_ratio": "Use calibrated GC-TCD peak areas for H2 and CO at steady state.",
+          "gc_fid_methane_slip_pct": "Use GC-FID methane peak area with external standard calibration.",
+          "carbon_balance_pct": "Report inlet vs outlet carbon closure."
+        },
+        "expected_outputs": {
+          "expected_h2_co_ratio": 2.4372146129608154,
+          "expected_methane_slip_pct": 3.9929370880126953,
+          "expected_output_type": "Chromatogram peak areas for H2, CO, CH4, CO2 and derived ratio/slip values."
+        },
+        "acceptance_criteria": {
+          "h2_co_ratio": "Accept if measured H2/CO is within +/- 0.145 of the forecast.",
+          "methane_slip_pct": "Accept if methane slip is within +/- 1.266 percentage points."
+        },
+        "source_alignment": [
+          "xu_froment_1989",
+          "cen_chemical_sector_2026"
+        ]
+      },
+      {
+        "protocol_id": "methanol-synthesis-gc-ftir",
+        "title": "CO2 hydrogenation to methanol with GC and ATR-FTIR readout",
+        "objective": "Check whether the forecasted methanol selectivity and methoxy band ratio remain coupled when pressure and recycle are adjusted inside the aligned envelope.",
+        "setup": {
+          "catalyst": "Cu/ZnO/Al2O3 fixed bed, 1.00 g",
+          "temperature_c": 245.0,
+          "pressure_bar": 48.0,
+          "feed_ratio_h2_to_co2": 3.0
+        },
+        "measurements": {
+          "gc_fid_methanol_selectivity_pct": "Integrate methanol, CO, and CO2 peaks after condensation and calibration.",
+          "atr_ftir_methoxy_ratio": "Report the 1030 cm^-1 to 1380 cm^-1 band area ratio.",
+          "condensate_mass_balance_pct": "Report condensate yield relative to carbon feed."
+        },
+        "expected_outputs": {
+          "expected_methanol_selectivity_pct": 83.29100036621094,
+          "expected_ftir_methoxy_ratio": 1.386074185371399,
+          "expected_output_type": "GC peak areas and ATR-FTIR methoxy-band ratios."
+        },
+        "acceptance_criteria": {
+          "methanol_selectivity_pct": "Accept if selectivity is within +/- 3.887 percentage points.",
+          "ftir_methoxy_ratio": "Accept if the 1030/1380 ratio is within +/- 0.059."
+        },
+        "source_alignment": [
+          "vanden_bussche_froment_1996",
+          "unctad_hormuz_2026_03_10"
+        ]
+      },
+      {
+        "protocol_id": "urea-chain-ftir-ic",
+        "title": "Ammonium carbamate to urea closure with FTIR and ion chromatography",
+        "objective": "Test the nitrogen branch directly with an aligned carbamate-to-urea conversion and downstream nitrate assay.",
+        "setup": {
+          "reactor": "Stainless steel microautoclave, 50 mL",
+          "temperature_c": 185.0,
+          "hold_time_min": 120.0,
+          "quench_temperature_c": 25.0
+        },
+        "measurements": {
+          "isolated_urea_yield_pct": "Dry the isolated solid and report gravimetric yield.",
+          "atr_ftir_urea_carbonyl_ratio": "Report the 1680 cm^-1 to 1460 cm^-1 band area ratio.",
+          "ic_nitrate_mg_l": "Measure nitrate in the hydrolysis liquor by ion chromatography."
+        },
+        "expected_outputs": {
+          "expected_urea_yield_pct": 87.83854675292969,
+          "expected_ftir_urea_carbonyl_ratio": 1.295000672340393,
+          "expected_nitrate_mg_l": 4.1028008460998535,
+          "expected_output_type": "Isolated yield %, ATR-FTIR band ratio, ion chromatogram nitrate concentration."
+        },
+        "acceptance_criteria": {
+          "urea_yield_pct": "Accept if isolated yield is within +/- 4.233 percentage points.",
+          "nitrate_mg_l": "Accept if nitrate is within +/- 0.447 mg/L."
+        },
+        "source_alignment": [
+          "iaea_gov_2025_50",
+          "iaea_gov_2026_8"
+        ]
+      },
+      {
+        "protocol_id": "desalination-conductivity",
+        "title": "Synthetic seawater polishing with conductivity and nitrate validation",
+        "objective": "Verify the water-service branch by coupling chloride load to permeate conductivity and nitrate burden in a bench RO loop.",
+        "setup": {
+          "membrane": "Polyamide RO coupon, 200 cm^2",
+          "feed_salinity_g_l": 35.0,
+          "transmembrane_pressure_bar": 55.0,
+          "recovery_ratio": 0.44
+        },
+        "measurements": {
+          "permeate_conductivity_uScm": "Measure permeate conductivity after 30 min steady operation.",
+          "ic_nitrate_mg_l": "Measure nitrate in the permeate or polishing stream by ion chromatography.",
+          "flux_decline_pct": "Report normalized water flux decline over the run."
+        },
+        "expected_outputs": {
+          "expected_permeate_conductivity_uScm": 209.1869354248047,
+          "expected_nitrate_mg_l": 4.1028008460998535,
+          "expected_output_type": "Conductivity trace, ion chromatogram nitrate peak, normalized flux decline."
+        },
+        "acceptance_criteria": {
+          "permeate_conductivity_uScm": "Accept if conductivity is within +/- 15.972 uS/cm.",
+          "nitrate_mg_l": "Accept if nitrate is within +/- 0.447 mg/L."
+        },
+        "source_alignment": [
+          "elimelech_phillip_2011",
+          "unctad_hormuz_2026_03_10"
+        ]
+      }
+    ]
+  },
+  "write_artifacts": {
+    "ok": true,
+    "tool": "write_artifacts",
+    "request_id": "2bc2a836493b4ab49ff82b400d31645f",
+    "duration_ms": 64991.471291999915,
+    "data": {
+      "metrics_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/model_metrics_lb12_hz1_u128-96-64.json",
+      "predictions_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/holdout_predictions_lb12_hz1_u128-96-64.csv",
+      "forecast_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/horizon_forecast_lb12_hz1_u128-96-64.json",
+      "optimization_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/optimization_summary_lb12_hz1_u128-96-64.json",
+      "validation_protocol_count": 4,
+      "figures": {
+        "training_history_figure": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/training_history_lb12_hz1_u128-96-64.png",
+        "holdout_forecast_figure": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png"
+      },
+      "config_tag": "lb12_hz1_u128-96-64"
+    },
+    "artifacts": {
+      "enabled": true,
+      "run_id": "20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f",
+      "storage_root": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f",
+      "request_record": {
+        "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/request_response.json",
+        "public_path": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/request_response.json",
+        "url": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/request_response.json"
+      },
+      "artifact_index": {
+        "path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/artifact_index.json",
+        "public_path": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/artifact_index.json",
+        "url": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/artifact_index.json"
+      },
+      "files": [
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png",
+          "public_path": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png",
+          "url": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/figures/holdout_forecast_lb12_hz1_u128-96-64.png"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/figures/training_history_lb12_hz1_u128-96-64.png",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/figures/training_history_lb12_hz1_u128-96-64.png",
+          "public_path": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/figures/training_history_lb12_hz1_u128-96-64.png",
+          "url": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/figures/training_history_lb12_hz1_u128-96-64.png"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/holdout_predictions_lb12_hz1_u128-96-64.csv",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/holdout_predictions_lb12_hz1_u128-96-64.csv",
+          "public_path": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/holdout_predictions_lb12_hz1_u128-96-64.csv",
+          "url": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/holdout_predictions_lb12_hz1_u128-96-64.csv"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/horizon_forecast_lb12_hz1_u128-96-64.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/horizon_forecast_lb12_hz1_u128-96-64.json",
+          "public_path": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/horizon_forecast_lb12_hz1_u128-96-64.json",
+          "url": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/horizon_forecast_lb12_hz1_u128-96-64.json"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/model_metrics_lb12_hz1_u128-96-64.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/model_metrics_lb12_hz1_u128-96-64.json",
+          "public_path": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/model_metrics_lb12_hz1_u128-96-64.json",
+          "url": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/model_metrics_lb12_hz1_u128-96-64.json"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/optimization_summary_lb12_hz1_u128-96-64.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/optimization_summary_lb12_hz1_u128-96-64.json",
+          "public_path": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/optimization_summary_lb12_hz1_u128-96-64.json",
+          "url": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/results/optimization_summary_lb12_hz1_u128-96-64.json"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/data/aligned_hormuz_benchmark.csv",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/data/aligned_hormuz_benchmark.csv",
+          "public_path": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/data/aligned_hormuz_benchmark.csv",
+          "url": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/data/aligned_hormuz_benchmark.csv"
+        },
+        {
+          "source_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/data/source_manifest.json",
+          "stored_path": "/Users/farukalpay/Documents/GitHub/hormuz-tectonochemical-engine/results/published_runs/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/data/source_manifest.json",
+          "public_path": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/data/source_manifest.json",
+          "url": "/mcp/artifacts/20260411T025253Z_write_artifacts_2bc2a836493b4ab49ff82b400d31645f/data/source_manifest.json"
+        }
+      ]
+    }
+  },
+  "run_finished_utc": "2026-04-11T02:52:53.270397Z"
+}
