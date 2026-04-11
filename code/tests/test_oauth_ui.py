@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 import pytest
@@ -9,6 +10,11 @@ from starlette.routing import Route
 from starlette.testclient import TestClient
 
 from hte.oauth import OAuthUiConfig, OAuthUiServer, hash_approval_password, load_oauth_ui_config, verify_approval_password
+
+
+@pytest.fixture(autouse=True)
+def _isolated_oauth_state_file(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("HTE_OAUTH_STATE_FILE", str(tmp_path / "oauth_state.json"))
 
 
 def _app_for(server: OAuthUiServer) -> Starlette:
@@ -175,3 +181,112 @@ def test_public_base_url_requires_https(monkeypatch: pytest.MonkeyPatch) -> None
     monkeypatch.setenv("HTE_OAUTH_PUBLIC_BASE_URL", "http://lightcap.ai")
     with pytest.raises(ValueError, match="must be an absolute https URL"):
         load_oauth_ui_config()
+
+
+def test_oauth_client_registry_survives_server_restart(tmp_path: Path) -> None:
+    state_file = tmp_path / "oauth_state.json"
+    config = OAuthUiConfig(state_file=state_file)
+    server = OAuthUiServer(resource_path="/mcp/hormuz", config=config)
+    client = TestClient(_app_for(server))
+
+    register = client.post(
+        "/mcp/hormuz/register",
+        json={
+            "client_name": "Persistent Client",
+            "redirect_uris": ["https://example.com/callback"],
+            "token_endpoint_auth_method": "none",
+        },
+    )
+    assert register.status_code == 200
+    payload = register.json()
+
+    reloaded_server = OAuthUiServer(resource_path="/mcp/hormuz", config=config)
+    reloaded_client = TestClient(_app_for(reloaded_server))
+    authorize = reloaded_client.get(
+        "/mcp/hormuz/authorize",
+        params={
+            "response_type": "code",
+            "client_id": payload["client_id"],
+            "redirect_uri": "https://example.com/callback",
+            "scope": payload["scope"],
+            "state": "persisted",
+        },
+    )
+    assert authorize.status_code == 200
+    assert 'value="approve"' in authorize.text
+
+
+def test_refresh_token_grant_rotates_token() -> None:
+    server = OAuthUiServer(resource_path="/mcp/hormuz")
+    client = TestClient(_app_for(server))
+
+    register = client.post(
+        "/mcp/hormuz/register",
+        json={
+            "client_name": "Refresh Client",
+            "redirect_uris": ["https://example.com/callback"],
+            "token_endpoint_auth_method": "none",
+        },
+    )
+    assert register.status_code == 200
+    payload = register.json()
+
+    authorize = client.get(
+        "/mcp/hormuz/authorize",
+        params={
+            "response_type": "code",
+            "client_id": payload["client_id"],
+            "redirect_uri": "https://example.com/callback",
+            "scope": payload["scope"],
+            "state": "refresh-state",
+            "code_challenge": "refresh-verifier",
+            "code_challenge_method": "plain",
+        },
+    )
+    request_id = _extract_request_id(authorize.text)
+
+    consent = client.post(
+        "/mcp/hormuz/consent",
+        data={"request_id": request_id, "decision": "approve"},
+        follow_redirects=False,
+    )
+    query = parse_qs(urlparse(consent.headers["location"]).query)
+    code = query["code"][0]
+
+    token = client.post(
+        "/mcp/hormuz/token",
+        data={
+            "grant_type": "authorization_code",
+            "client_id": payload["client_id"],
+            "redirect_uri": "https://example.com/callback",
+            "code": code,
+            "code_verifier": "refresh-verifier",
+        },
+    )
+    assert token.status_code == 200
+    issued = token.json()
+    original_refresh_token = issued["refresh_token"]
+
+    refreshed = client.post(
+        "/mcp/hormuz/token",
+        data={
+            "grant_type": "refresh_token",
+            "client_id": payload["client_id"],
+            "refresh_token": original_refresh_token,
+        },
+    )
+    assert refreshed.status_code == 200
+    refreshed_payload = refreshed.json()
+    assert refreshed_payload["refresh_token"] != original_refresh_token
+    assert "access_token" in refreshed_payload
+
+    replay = client.post(
+        "/mcp/hormuz/token",
+        data={
+            "grant_type": "refresh_token",
+            "client_id": payload["client_id"],
+            "refresh_token": original_refresh_token,
+        },
+    )
+    assert replay.status_code == 400
+    assert replay.json()["error"] == "invalid_grant"

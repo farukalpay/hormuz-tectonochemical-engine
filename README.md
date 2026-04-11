@@ -80,7 +80,7 @@ Template default endpoint path is `/mcp/hormuz` on the port in `HTE_REMOTE_MCP_P
 FastMCP framework default remains `/mcp` when `FASTMCP_STREAMABLE_HTTP_PATH` is not set.
 Container restart policy is `unless-stopped`, so it comes back after server reboot by default.
 
-The Docker deploy auto-selects CPU, CUDA, or ROCm, keeps HTTP stateless by default, and retrains stale CPU fallback models when `GPU:0` becomes healthy.
+The Docker deploy auto-selects CPU, CUDA, or ROCm, keeps HTTP stateless by default, and retrains stale CPU fallback models when `GPU:0` becomes healthy. With `HTE_REQUIRE_GPU=true`, GPU-requested runs fail fast instead of silently falling back to `/CPU:0`.
 Concurrency, OAuth, runtime image, and artifact publishing settings live in `.env` / `.env.example`.
 
 ## ChatGPT MCP Usage
@@ -105,6 +105,9 @@ No password is required by default.
 If `HTE_OAUTH_APPROVAL_PASSWORD_HASH` is set, the authorize page asks only that approval password.
 Set `HTE_OAUTH_PUBLIC_BASE_URL=https://your-domain` so OAuth metadata always publishes HTTPS URLs.
 `HTE_ARTIFACT_PUBLIC_BASE_URL` should also use `https://` for connector compatibility.
+OAuth client registrations and refresh-token state are persisted at `HTE_OAUTH_STATE_FILE` (default: `/app/results/state/oauth_state.json`).
+For long-lived connectors, keep `/app/results` on a persistent volume so `client_id` records survive container replacement.
+Token lifetimes are tunable with `HTE_OAUTH_ACCESS_TOKEN_TTL_SECONDS`, `HTE_OAUTH_REFRESH_TOKEN_TTL_SECONDS`, and `HTE_OAUTH_AUTHORIZATION_CODE_TTL_SECONDS`.
 Authorize UI endpoint (served from this stack): `https://lightcap.ai/mcp/hormuz/authorize`.
 Generate a secure hash with:
 

@@ -6,6 +6,8 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import hte.calibration as calibration
+import numpy as np
+import pytest
 from hte.config import AppConfig
 from hte.dataset import build_dataset_bundle_with_scenarios
 from hte.model import build_forecaster
@@ -58,6 +60,87 @@ def test_cached_cpu_artifacts_are_not_reused_when_gpu_is_available() -> None:
         scenario_rows=None,
         force_retrain=False,
     )
+
+
+def test_cpu_fallback_allowed_defaults_to_true_for_gpu_requests(monkeypatch) -> None:
+    monkeypatch.delenv("HTE_REQUIRE_GPU", raising=False)
+    assert calibration._cpu_fallback_allowed("gpu") is True
+
+
+def test_cpu_fallback_is_disabled_when_gpu_is_required(monkeypatch) -> None:
+    monkeypatch.setenv("HTE_REQUIRE_GPU", "true")
+    assert calibration._cpu_fallback_allowed("gpu") is False
+    assert calibration._cpu_fallback_allowed("cpu") is True
+
+
+def test_predict_scaled_with_device_rejects_non_finite_gpu_when_cpu_fallback_disabled(monkeypatch) -> None:
+    class _FakeDeviceContext:
+        def __enter__(self):  # noqa: ANN204
+            return None
+
+        def __exit__(self, exc_type, exc, tb):  # noqa: ANN001, ANN204
+            return False
+
+    fake_tf = SimpleNamespace(device=lambda _: _FakeDeviceContext())
+    monkeypatch.setitem(sys.modules, "tensorflow", fake_tf)
+
+    class _FakeTensor:
+        def __init__(self, values: np.ndarray) -> None:
+            self._values = values
+
+        def numpy(self) -> np.ndarray:
+            return self._values
+
+    class _FakeModel:
+        def __call__(self, window, training=False):  # noqa: ANN001, FBT002
+            return _FakeTensor(np.array([[np.nan, np.nan]], dtype=np.float32))
+
+    with pytest.raises(RuntimeError, match="CPU fallback is disabled"):
+        calibration._predict_scaled_with_device(
+            _FakeModel(),
+            window=np.zeros((1, 2, 2), dtype=np.float32),
+            preferred_device="/GPU:0",
+            allow_cpu_fallback=False,
+        )
+
+
+def test_predict_scaled_with_device_uses_cpu_fallback_when_allowed(monkeypatch) -> None:
+    class _FakeDeviceContext:
+        def __enter__(self):  # noqa: ANN204
+            return None
+
+        def __exit__(self, exc_type, exc, tb):  # noqa: ANN001, ANN204
+            return False
+
+    fake_tf = SimpleNamespace(device=lambda _: _FakeDeviceContext())
+    monkeypatch.setitem(sys.modules, "tensorflow", fake_tf)
+
+    class _FakeTensor:
+        def __init__(self, values: np.ndarray) -> None:
+            self._values = values
+
+        def numpy(self) -> np.ndarray:
+            return self._values
+
+    class _FakeModel:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def __call__(self, window, training=False):  # noqa: ANN001, FBT002
+            self.calls += 1
+            if self.calls == 1:
+                return _FakeTensor(np.array([[np.nan, np.nan]], dtype=np.float32))
+            return _FakeTensor(np.array([[0.1, 0.2]], dtype=np.float32))
+
+    predicted, used_device = calibration._predict_scaled_with_device(
+        _FakeModel(),
+        window=np.zeros((1, 2, 2), dtype=np.float32),
+        preferred_device="/GPU:0",
+        allow_cpu_fallback=True,
+    )
+
+    assert used_device == "/CPU:0"
+    assert np.isfinite(predicted).all()
 
 
 def test_cache_without_matching_runtime_signature_is_not_reused() -> None:

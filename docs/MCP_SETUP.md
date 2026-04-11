@@ -47,7 +47,7 @@ code/scripts/deploy_remote_mcp.sh
 - ROCm base image defaults to `HTE_ROCM_BASE_IMAGE=rocm/tensorflow:latest`.
 - Set `HTE_ROCM_HSA_OVERRIDE_GFX_VERSION` only when your ROCm host GPU needs an explicit architecture override.
 - Use `HTE_DOCKER_BASE_IMAGE` to pin a custom base image for any mode.
-- Set `HTE_REQUIRE_GPU=true` to fail deployment if backend probe cannot resolve `GPU:0`.
+- Set `HTE_REQUIRE_GPU=true` to fail deployment if backend probe cannot resolve `GPU:0`; at runtime, GPU-requested training/forecast calls also fail instead of dropping to CPU.
 - Runtime disables TensorFlow XLA JIT.
 - Runtime enables GPU memory growth before probing/training to avoid unstable ROCm autotune paths.
 - Determinism defaults to `auto`: CPU uses deterministic ops; ROCm GPU keeps seeded execution without the determinism path that breaks training.
@@ -58,6 +58,9 @@ code/scripts/deploy_remote_mcp.sh
 - OAuth consent defaults to approve-only unless `HTE_OAUTH_APPROVAL_PASSWORD_HASH` is configured.
 - Set `HTE_OAUTH_PUBLIC_BASE_URL` to your HTTPS domain for stable OAuth metadata URLs.
 - `HTE_OAUTH_PUBLIC_BASE_URL` and `HTE_ARTIFACT_PUBLIC_BASE_URL` should use `https://`.
+- OAuth clients and refresh tokens persist to `HTE_OAUTH_STATE_FILE` (default `/app/results/state/oauth_state.json`).
+- Keep `/app/results` on a persistent host mount to avoid `unknown client_id` after container recreation.
+- Token lifetimes can be tuned with `HTE_OAUTH_ACCESS_TOKEN_TTL_SECONDS`, `HTE_OAUTH_REFRESH_TOKEN_TTL_SECONDS`, and `HTE_OAUTH_AUTHORIZATION_CODE_TTL_SECONDS`.
 - Authorize UI endpoint: `<base-url>/mcp/hormuz/authorize`.
 - Artifact links are enabled by default and served from `<base-url>/mcp/hormuz/artifacts/...`.
 - Disable artifact links with `HTE_ARTIFACT_LINKS_ENABLED=false`.

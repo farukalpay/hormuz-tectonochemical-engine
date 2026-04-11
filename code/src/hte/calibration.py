@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import platform
 from dataclasses import replace
 from pathlib import Path
@@ -133,6 +134,25 @@ def _requested_backend_device(preference: str) -> str:
     return "/GPU:0"
 
 
+def _read_env_bool(name: str, default: bool = False) -> bool:
+    raw = os.environ.get(name)
+    if raw is None:
+        return default
+    normalized = raw.strip().lower()
+    if normalized in {"1", "true", "yes", "on"}:
+        return True
+    if normalized in {"0", "false", "no", "off"}:
+        return False
+    return default
+
+
+def _cpu_fallback_allowed(backend_preference: str) -> bool:
+    requested_device = _requested_backend_device(backend_preference)
+    if requested_device == "/CPU:0":
+        return True
+    return not _read_env_bool("HTE_REQUIRE_GPU", default=False)
+
+
 def _stabilized_training_profile(config: AppConfig) -> AppConfig:
     training = replace(
         config.training,
@@ -213,11 +233,17 @@ def _materialize_selected_device(tf, attempted_device: str) -> str:
     return "/CPU:0"
 
 
-def _predict_scaled_with_device(model, window, preferred_device: str) -> tuple[np.ndarray, str]:
+def _predict_scaled_with_device(
+    model,
+    window,
+    preferred_device: str,
+    *,
+    allow_cpu_fallback: bool = True,
+) -> tuple[np.ndarray, str]:
     import tensorflow as tf
 
     candidate_devices = [preferred_device]
-    if preferred_device != "/CPU:0":
+    if allow_cpu_fallback and preferred_device != "/CPU:0":
         candidate_devices.append("/CPU:0")
 
     last_error: Exception | None = None
@@ -231,11 +257,19 @@ def _predict_scaled_with_device(model, window, preferred_device: str) -> tuple[n
             last_device = device_name
             if np.isfinite(last_prediction).all() or device_name == "/CPU:0":
                 return last_prediction, device_name
+            if not allow_cpu_fallback and device_name != "/CPU:0":
+                raise RuntimeError(
+                    "InferenceNonFiniteError: GPU prediction produced non-finite values and CPU fallback is disabled (HTE_REQUIRE_GPU=true)."
+                )
         except Exception as exc:
             last_error = exc
+            if not allow_cpu_fallback and device_name != "/CPU:0":
+                raise RuntimeError(
+                    f"InferenceDeviceError: GPU inference failed and CPU fallback is disabled (HTE_REQUIRE_GPU=true): {exc}"
+                ) from exc
             continue
 
-    if last_prediction is not None:
+    if last_prediction is not None and np.isfinite(last_prediction).all():
         return last_prediction, last_device
     if last_error is not None:
         raise RuntimeError(f"InferenceDeviceError: {last_error}") from last_error
@@ -430,8 +464,9 @@ def train_forecaster(
             determinism_enabled = False
 
     attempted_devices: list[dict[str, Any]] = []
+    allow_cpu_fallback = _cpu_fallback_allowed(backend_preference)
     candidate_devices = [backend.resolved_device]
-    if backend.resolved_device != "/CPU:0":
+    if allow_cpu_fallback and backend.resolved_device != "/CPU:0":
         candidate_devices.append("/CPU:0")
 
     selected_device: str | None = None
@@ -522,9 +557,10 @@ def train_forecaster(
         or selected_strategy is None
         or selected_profile_config is None
     ):
-        raise RuntimeError(
-            "ModelNonConvergentError: training produced non-finite history/predictions on all candidate devices"
-        )
+        message = "ModelNonConvergentError: training produced non-finite history/predictions on all candidate devices"
+        if not allow_cpu_fallback and backend.resolved_device != "/CPU:0":
+            message += " CPU fallback is disabled (HTE_REQUIRE_GPU=true)."
+        raise RuntimeError(message)
 
     selected_model.save(model_path)
 
@@ -537,6 +573,7 @@ def train_forecaster(
         "version": backend.version,
         "notes": list(backend.notes),
         "runtime_signature": _current_runtime_signature(backend_version=backend.version),
+        "cpu_fallback_allowed": allow_cpu_fallback,
     }
     metrics["training"] = {
         "lookback_steps": app_config.data.lookback_steps,
@@ -629,12 +666,18 @@ def forecast_horizon(
     future_schedule = persistence_driver_schedule(bundle, app_config, steps)
     target_indices = [bundle.feature_columns.index(column) for column in bundle.target_columns]
     inference_device = _requested_backend_device(backend_preference)
+    allow_cpu_fallback = _cpu_fallback_allowed(backend_preference)
     fallback_steps: list[int] = []
     clipped_steps: list[int] = []
     rows: list[dict[str, float | str]] = []
 
     for step in range(steps):
-        predicted_scaled, inference_device = _predict_scaled_with_device(model, window, inference_device)
+        predicted_scaled, inference_device = _predict_scaled_with_device(
+            model,
+            window,
+            inference_device,
+            allow_cpu_fallback=allow_cpu_fallback,
+        )
         predicted_scaled, used_fallback, used_clip = _stabilize_prediction(
             bundle,
             window.numpy()[0],
@@ -665,6 +708,7 @@ def forecast_horizon(
         "training_device": _resolved_backend_device(artifacts),
         "forecast": rows,
         "driver_policy": "persistence plus linear slope clipping within observed bounds",
+        "cpu_fallback_allowed": allow_cpu_fallback,
         "status": "ok" if not fallback_steps else "degraded_non_finite_predictions",
         "fallback_steps": fallback_steps,
         "clipped_steps": clipped_steps,
